@@ -73,3 +73,4 @@ For browser checks, run `npm install`, start the app on port 8000, then `node te
 
 Use HTTPS, `APP_ENV=production`, `APP_DEBUG=false`, `SESSION_SECURE_COOKIE=true`, a strong application key, and a dedicated database account. Set writable permissions only for `storage` and `bootstrap/cache`. Configure encrypted backups for both the database and private files. Run `php artisan optimize` after deployment. Seed only the admin account in production; demo data is explicitly refused there. Tune upload limits and worker/HTTP timeouts for your deployment. Large report exports currently collect report rows in memory; move exports to queued/chunked jobs for very large installations.
 # ladiesPG
+# ladiesPG
