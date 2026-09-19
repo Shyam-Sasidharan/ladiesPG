@@ -12,6 +12,7 @@ use App\Models\Room;
 use App\Models\RoomTransfer;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AllocationService
@@ -99,27 +100,50 @@ class AllocationService
             if ($data['date'] < $active->allocation->check_in) {
                 $this->fail('Checkout date cannot precede check-in.');
             }
-            $pending = $resident->rentRecords()->with('payments')->get()->sum('pending');
-            $deposits = max(0, $resident->payments()->where('type', 'deposit')->sum('amount') - $resident->checkouts()->sum(DB::raw('refund + deductions + deposit_applied')));
-            if ($data['deductions'] > $deposits) {
-                $this->fail('Deductions cannot exceed the remaining collected deposit.');
+            $rentRecords = $resident->rentRecords()->with('payments')->orderBy('month')->lockForUpdate()->get();
+            $pending = (float) $rentRecords->sum('pending');
+            $deposits = $this->depositHeldForResident($resident);
+            $refundRequested = filter_var($data['refund_security_deposit'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            $refunded = $refundRequested ? (float) $data['refund_amount'] : 0;
+            if ($refundRequested && $refunded > $deposits) {
+                $this->fail('Refund exceeds the security deposit currently held.');
             }
-            $applied = min($pending, max(0, $deposits - $data['deductions']));
-            $remaining = $applied;
-            foreach ($resident->rentRecords()->with('payments')->orderBy('month')->lockForUpdate()->get() as $record) {
-                $amount = min($remaining, $record->pending);
-                if ($amount > 0) {
-                    Payment::create(['resident_id' => $residentId, 'rent_record_id' => $record->id, 'type' => 'rent', 'amount' => $amount, 'payment_date' => $data['date'], 'method' => 'deposit_adjustment', 'notes' => 'Security deposit applied to outstanding rent at checkout', 'created_by' => auth()->id()]);
-                }
-                $remaining = round($remaining - $amount, 2);
+            $action = $refundRequested ? 'refund_now' : ($deposits > 0 ? 'refund_later' : 'no_deposit');
+            $pendingRefund = max(0, round($deposits - $refunded, 2));
+            $checkout = Checkout::create([
+                'resident_id' => $residentId, 'allocation_id' => $active->allocation_id, 'date' => $data['date'],
+                'reason' => $data['reason'], 'deposit_action' => $action,
+                'deposit_held' => $deposits, 'pending_rent' => $pending, 'deductions' => 0, 'deposit_applied' => 0,
+                'refund' => $refunded, 'deposit_refunded' => $refunded, 'pending_refund' => $pendingRefund,
+                'notes' => $data['reason'],
+                'created_by' => auth()->id(),
+            ]);
+            if ($refunded > 0) {
+                $resident->payments()->where('type', 'deposit')->where('status', 'active')
+                    ->whereDoesntHave('financialTransaction')->get()
+                    ->each(fn (Payment $payment) => app(AccountingService::class)->recordPayment($payment));
+                app(AccountingService::class)->create([
+                    'request_token' => (string) Str::uuid(), 'transaction_date' => $data['date'],
+                    'transaction_type' => 'SECURITY_DEPOSIT_REFUND', 'resident_id' => $residentId,
+                    'source_type' => Checkout::class, 'source_id' => $checkout->id, 'amount' => $refunded,
+                    'description' => 'Security deposit refunded at checkout for '.$resident->full_name,
+                    'notes' => $data['reason'],
+                ]);
             }
-            $refund = max(0, round($deposits - $data['deductions'] - $applied, 2));
-            $checkout = Checkout::create(['resident_id' => $residentId, 'allocation_id' => $active->allocation_id, 'date' => $data['date'], 'reason' => $data['reason'], 'pending_rent' => $pending, 'deductions' => $data['deductions'], 'deposit_applied' => $applied, 'refund' => $refund, 'notes' => $data['notes'] ?? null, 'created_by' => auth()->id()]);
             $active->allocation->update(['check_out' => $data['date']]);
             $active->delete();
             $resident->update(['status' => 'checked_out', 'expected_checkout' => $data['date'], 'updated_by' => auth()->id()]);
 
             return $checkout;
         }, 5);
+    }
+
+    public function depositHeldForResident(Resident $resident): float
+    {
+        $received = (float) $resident->payments()->where('type', 'deposit')->where('status', 'active')->sum('amount');
+        $settled = (float) $resident->financialTransactions()->where('status', 'active')
+            ->whereIn('transaction_type', ['SECURITY_DEPOSIT_REFUND', 'SECURITY_DEPOSIT_ADJUSTMENT'])->sum('amount');
+
+        return max(0, round($received - $settled, 2));
     }
 }

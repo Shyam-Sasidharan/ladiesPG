@@ -8,6 +8,11 @@ class Checkout extends Model
 {
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return ['date' => 'date', 'notice_date' => 'date'];
+    }
+
     public function resident()
     {
         return $this->belongsTo(Resident::class)->withTrashed();

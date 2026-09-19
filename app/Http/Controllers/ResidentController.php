@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ResidentRequest;
 use App\Models\Floor;
 use App\Models\Resident;
+use App\Services\AllocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,7 @@ class ResidentController extends Controller
 {
     public function index(Request $r)
     {
-        $query = Resident::with('activeAllocation.bed.room.floor');
+        $query = Resident::with(['activeAllocation.bed.room.floor', 'allocations.bed.room.floor']);
         if ($r->filled('q')) {
             $query->where(fn ($q) => $q->where('full_name', 'like', '%'.$r->q.'%')->orWhere('mobile', 'like', '%'.$r->q.'%')->orWhereHas('activeAllocation.bed', fn ($b) => $b->where('name', 'like', '%'.$r->q.'%')->orWhereHas('room', fn ($room) => $room->where('number', 'like', '%'.$r->q.'%'))));
         }
@@ -48,11 +49,12 @@ class ResidentController extends Controller
         return redirect()->route('residents.show', $resident)->with('success', 'Resident registered. You can now upload documents and allocate a bed.');
     }
 
-    public function show(Resident $resident)
+    public function show(Resident $resident, AllocationService $allocationService)
     {
-        $resident->load(['activeAllocation.bed.room.floor', 'allocations.bed.room.floor', 'documents', 'payments', 'rentRecords.payments', 'transfers.fromAllocation.bed.room', 'transfers.toAllocation.bed.room', 'checkouts']);
+        $resident->load(['activeAllocation.bed.room.floor', 'allocations.bed.room.floor', 'documents', 'payments', 'rentRecords.payments', 'transfers.fromAllocation.bed.room', 'transfers.toAllocation.bed.room', 'checkouts.allocation.bed.room', 'financialTransactions']);
+        $depositHeld = $allocationService->depositHeldForResident($resident);
 
-        return view('residents.show', compact('resident'));
+        return view('residents.show', compact('resident', 'depositHeld'));
     }
 
     public function edit(Resident $resident)
@@ -93,6 +95,6 @@ class ResidentController extends Controller
     {
         abort_unless($resident->photo && Storage::disk('local')->exists($resident->photo), 404);
 
-        return Storage::disk('local')->response($resident->photo,null,['Cache-Control' => 'private, no-store', 'X-Content-Type-Options' => 'nosniff']);
+        return Storage::disk('local')->response($resident->photo, null, ['Cache-Control' => 'private, no-store', 'X-Content-Type-Options' => 'nosniff']);
     }
 }

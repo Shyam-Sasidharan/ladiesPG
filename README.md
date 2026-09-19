@@ -29,6 +29,20 @@ For XAMPP/Apache, set the virtual host document root to this project's **public*
 - **Reports:** occupancy, individual available beds, floor/room summaries, active/checked-out residents, collections, pending rent, deposits, and stay history. Export actual `.xlsx` or PDF files. Exported spreadsheet values are explicitly text to prevent formula execution.
 - **Settings:** property details and administrator password changes.
 
+## Partner accounting
+
+The **Transactions** section keeps four concepts separate: operating profit, property cash, resident security-deposit liability, and partner positions. Existing rent and deposit payments remain canonical in `payments`; each is linked once into `financial_transactions` for the combined history. It is never entered again manually.
+
+- Partner contributions increase property funds and that partner's direct contribution.
+- A partner-paid expense increases operating expenses and that partner's invested position, without reducing property cash.
+- A business-funded expense increases operating expenses and reduces property cash, without affecting either partner's contribution.
+- Security deposits increase property cash and resident liability, but never profit. Refunds reduce both. Deposit applied to rent is an internal reclassification with no new cash inflow.
+- Profit withdrawals reduce property cash and the selected partner's remaining entitlement. They are limited by both cumulative operating profit and property funds after deposit liability. Reimbursements are tracked separately from profit withdrawals.
+- Optional profit-share percentages are not assumed. Active shares cannot total more than 100%.
+- Posted financial records cannot be deleted. Use **Reverse transaction** with a reason; the original and reversal remain visible.
+
+Available reports include partner contributions, expenses, operating income, security deposits, partner withdrawals, and the complete transaction history. All support the existing PDF and Excel exports.
+
 ## Billing conventions
 
 Rent is charged as a **full calendar month**, due on the 5th, with no automatic prorating. Generation uses the active allocation's rent and creates at most one invoice per resident and month. A transfer takes effect for later generated invoices; existing invoices are unchanged. Late fees are set by an administrator. Deposit adjustments appear as rent settlements and are identifiable by their payment method.

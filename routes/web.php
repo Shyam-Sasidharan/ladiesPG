@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdministrationController;
 use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResidentController;
@@ -48,8 +50,19 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::post('/billing/generate', [BillingController::class, 'generate'])->name('billing.generate');
     Route::post('/payments', [BillingController::class, 'pay'])->name('payments.store');
     Route::put('/rent/{record}/late-fee', [BillingController::class, 'lateFee'])->name('rent.late-fee');
+    Route::get('/accounting', [AccountingController::class, 'summary'])->name('accounting.summary');
+    Route::get('/accounting/transactions/create', [AccountingController::class, 'create'])->name('accounting.transactions.create');
+    Route::post('/accounting/transactions', [AccountingController::class, 'store'])->name('accounting.transactions.store');
+    Route::get('/accounting/transactions', [AccountingController::class, 'history'])->name('accounting.transactions.index');
+    Route::get('/accounting/transactions/{transaction}', [AccountingController::class, 'show'])->name('accounting.transactions.show');
+    Route::post('/accounting/transactions/{transaction}/reverse', [AccountingController::class, 'reverse'])->name('accounting.transactions.reverse');
+    Route::get('/accounting/transactions/{transaction}/attachment', [AccountingController::class, 'attachment'])->name('accounting.transactions.attachment');
+    Route::get('/partners', [PartnerController::class, 'index'])->name('partners.index');
+    Route::post('/partners', [PartnerController::class, 'store'])->name('partners.store');
+    Route::put('/partners/{partner}', [PartnerController::class, 'update'])->name('partners.update');
+    Route::get('/partners/{partner}/statement', [PartnerController::class, 'statement'])->name('partners.statement');
     Route::post('/residents/{resident}/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
-    Route::get('/reports',[ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });

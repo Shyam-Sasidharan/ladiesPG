@@ -18,13 +18,13 @@ class BillingController extends Controller
         $q = RentRecord::with(['resident', 'payments', 'allocation.bed.room'])->when($r->month, fn ($q) => $q->where('month', $r->month.'-01'))->when($r->q, fn ($q) => $q->whereHas('resident', fn ($q) => $q->where('full_name', 'like', '%'.$r->q.'%')->orWhere('mobile', 'like', '%'.$r->q.'%')));
         if ($r->filled('status')) {
             $q->withSum('payments', 'amount');
-            $paid = '(select coalesce(sum(payments.amount),0) from payments where payments.rent_record_id=rent_records.id)';
+            $paid = "(select coalesce(sum(payments.amount),0) from payments where payments.rent_record_id=rent_records.id and payments.status='active')";
             match ($r->status) {
                 'paid' => $q->whereRaw("$paid >= amount + late_fee"),'partially_paid' => $q->whereRaw("$paid > 0 AND $paid < amount + late_fee"),'overdue' => $q->whereRaw("$paid < amount + late_fee")->whereDate('due_date', '<', today()),default => $q->whereRaw("$paid < amount + late_fee")
             };
         }
 
-        return view('billing.index', ['records' => $q->latest('month')->paginate(15)->withQueryString(), 'residents' => Resident::orderBy('full_name')->get(), 'payments' => Payment::with('resident')->latest()->limit(10)->get()]);
+        return view('billing.index', ['records' => $q->latest('month')->paginate(15)->withQueryString(), 'residents' => Resident::orderBy('full_name')->get(), 'payments' => Payment::with('resident')->where('status', 'active')->latest()->limit(10)->get()]);
     }
 
     public function generate(Request $r, BillingService $service)

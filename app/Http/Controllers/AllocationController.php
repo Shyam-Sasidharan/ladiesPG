@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AllocationRequest;
+use App\Http\Requests\CheckoutRequest;
 use App\Models\Bed;
 use App\Models\Floor;
 use App\Models\Resident;
@@ -43,11 +44,10 @@ class AllocationController extends Controller
         return redirect()->route('residents.show', $r->resident_id)->with('success', 'Room transfer completed. Previous stay preserved.');
     }
 
-    public function checkout(Request $r, Resident $resident, AllocationService $service)
+    public function checkout(CheckoutRequest $r, Resident $resident, AllocationService $service)
     {
-        $data = $r->validate(['date' => 'required|date|before_or_equal:today', 'reason' => 'required|string|max:2000', 'deductions' => 'required|numeric|min:0|max:9999999', 'notes' => 'nullable|string|max:5000']);
-        $checkout = $service->checkout($resident->id, $data);
+        $checkout = $service->checkout($resident->id, $r->validated());
 
-        return back()->with('success', 'Checkout complete. Refund due: INR '.number_format($checkout->refund,2));
+        return redirect()->route('residents.show', $resident)->with('success', 'Checkout complete. The bed is available and the resident history is preserved.');
     }
 }

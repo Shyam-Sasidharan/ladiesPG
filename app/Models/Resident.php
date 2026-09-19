@@ -48,6 +48,11 @@ class Resident extends Model
 
     public function checkouts()
     {
-        return $this->hasMany(Checkout::class);
+        return $this->hasMany(Checkout::class)->latest('date')->latest('id');
+    }
+
+    public function financialTransactions()
+    {
+        return $this->hasMany(FinancialTransaction::class);
     }
 }

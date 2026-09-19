@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\RentRecord;
 use App\Models\Resident;
 use Carbon\Carbon;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -38,18 +39,31 @@ class BillingService
 
     public function pay(array $data): Payment
     {
-        return DB::transaction(function () use ($data) {
-            Resident::lockForUpdate()->findOrFail($data['resident_id']);
-            if ($data['type'] === 'rent') {
-                $record = RentRecord::with('payments')->lockForUpdate()->findOrFail($data['rent_record_id']);
-                if ($record->resident_id != $data['resident_id'] || round($data['amount'] * 100) > round($record->pending * 100)) {
-                    throw ValidationException::withMessages(['amount' => 'Payment must belong to this resident and cannot exceed the outstanding rent.']);
+        try {
+            return DB::transaction(function () use ($data) {
+                Resident::lockForUpdate()->findOrFail($data['resident_id']);
+                if ($data['type'] === 'rent') {
+                    $record = RentRecord::with('payments')->lockForUpdate()->findOrFail($data['rent_record_id']);
+                    if ($record->resident_id != $data['resident_id'] || round($data['amount'] * 100) > round($record->pending * 100)) {
+                        throw ValidationException::withMessages(['amount' => 'Payment must belong to this resident and cannot exceed the outstanding rent.']);
+                    }
+                } else {
+                    $data['rent_record_id'] = null;
+                    $resident = Resident::findOrFail($data['resident_id']);
+                    $received = (float) $resident->payments()->where('type', 'deposit')->where('status', 'active')->sum('amount');
+                    if ((float) $resident->security_deposit > 0 && $received + (float) $data['amount'] > (float) $resident->security_deposit) {
+                        throw ValidationException::withMessages(['amount' => 'Deposit would exceed this resident’s expected security deposit.']);
+                    }
                 }
-            } else {
-                $data['rent_record_id'] = null;
-            }
 
-            return Payment::create($data + ['created_by' => auth()->id()]);
-        }, 5);
+                return Payment::create($data + ['created_by' => auth()->id()]);
+            }, 5);
+        } catch (UniqueConstraintViolationException $e) {
+            $existing = isset($data['request_token']) ? Payment::where('request_token', $data['request_token'])->first() : null;
+            if ($existing) {
+                return $existing;
+            }
+            throw $e;
+        }
     }
 }

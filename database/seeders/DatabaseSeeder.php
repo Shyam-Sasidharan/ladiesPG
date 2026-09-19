@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
             $user = new User;
             $user->forceFill(['name' => env('ADMIN_NAME', 'Admin'), 'email' => env('ADMIN_EMAIL', 'admin@ladiespg.com'), 'password' => $password, 'is_admin' => true])->save();
         }
+        $this->call(AccountingSeeder::class);
     }
 }

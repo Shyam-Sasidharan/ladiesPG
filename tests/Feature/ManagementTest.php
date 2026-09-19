@@ -4,17 +4,22 @@ namespace Tests\Feature;
 
 use App\Models\ActiveAllocation;
 use App\Models\Allocation;
+use App\Models\Checkout;
+use App\Models\FinancialTransaction;
 use App\Models\Floor;
+use App\Models\Payment;
 use App\Models\RentRecord;
 use App\Models\Resident;
 use App\Models\Room;
 use App\Models\User;
+use App\Services\AccountingService;
 use App\Services\AllocationService;
 use App\Services\BillingService;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
@@ -30,15 +35,15 @@ class ManagementTest extends TestCase
         $this->actingAs($user);
     }
 
-    private function room(): Room
+    private function room(int $capacity = 2): Room
     {
         $floor = Floor::create(['name' => 'Floor '.Floor::count(), 'number' => 0]);
-        $room = Room::create(['floor_id' => $floor->id, 'number' => 'R'.Room::count(), 'capacity' => 2, 'monthly_rent' => 5000, 'security_deposit' => 10000]);
-        foreach ([1, 2] as $n) {
+        $room = Room::create(['floor_id' => $floor->id, 'number' => 'R'.Room::count(), 'capacity' => $capacity, 'monthly_rent' => 5000, 'security_deposit' => 10000]);
+        foreach (range(1, $capacity) as $n) {
             $room->beds()->create(['name' => 'B'.$n, 'position' => $n]);
         }
 
-return $room;
+        return $room;
     }
 
     private function resident(): Resident
@@ -130,7 +135,7 @@ return $room;
         $service->pay(['resident_id' => $resident->id, 'rent_record_id' => $record->id, 'type' => 'rent', 'amount' => 2000, 'method' => 'upi', 'payment_date' => today()->toDateString()]);
         $this->assertEquals(3000, $record->fresh()->pending);
         $this->assertSame('partially_paid', $record->fresh()->status);
-        $this->post('/payments', ['resident_id' => $resident->id, 'rent_record_id' => $record->id, 'type' => 'rent', 'amount' => 4000, 'method' => 'upi', 'payment_date' => today()->toDateString()])->assertSessionHasErrors('amount');
+        $this->post('/payments', ['request_token' => (string) Str::uuid(), 'resident_id' => $resident->id, 'rent_record_id' => $record->id, 'type' => 'rent', 'amount' => 4000, 'method' => 'upi', 'payment_date' => today()->toDateString()])->assertSessionHasErrors('amount');
     }
 
     public function test_checkout_releases_bed_settles_deposit_and_preserves_records(): void
@@ -140,15 +145,167 @@ return $room;
         $service = app(AllocationService::class);
         $service->allocate($resident->id, $room->beds[0]->id, ['date' => today()->toDateString(), 'initial_payment' => 10000]);
         app(BillingService::class)->generate(today()->format('Y-m'));
-        $checkout = $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Moving city', 'deductions' => 500]);
-        $this->assertEquals(4500, $checkout->refund);
-        $this->assertEquals(5000, $checkout->deposit_applied);
-        $this->assertEquals(0, RentRecord::first()->pending);
+        $checkout = $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Moving city', 'refund_security_deposit' => false, 'refund_amount' => 99999]);
+        $this->assertEquals(10000, $checkout->pending_refund);
+        $this->assertEquals(0, $checkout->deposit_applied);
+        $this->assertEquals(5000, RentRecord::first()->pending);
         $this->assertSame('checked_out', $resident->fresh()->status);
         $this->assertSame('available', $room->beds[0]->fresh()->effective_status);
         $this->assertDatabaseCount('allocations', 1);
-        $this->assertDatabaseCount('payments', 2);
+        $this->assertDatabaseCount('payments', 1);
         $this->assertDatabaseCount('active_allocations', 0);
+    }
+
+    public function test_vacate_with_refund_later_releases_only_selected_bed_and_allows_reallocation(): void
+    {
+        $room = $this->room(3);
+        $service = app(AllocationService::class);
+        $residents = collect(['Resident A', 'Ayana', 'Resident C'])->map(fn ($name, $index) => Resident::create([
+            'full_name' => $name, 'mobile' => '900000001'.$index, 'joining_date' => today(),
+            'monthly_rent' => 5000, 'security_deposit' => 8000,
+        ]));
+        foreach ($residents as $index => $resident) {
+            $service->allocate($resident->id, $room->beds[$index]->id, [
+                'date' => today()->toDateString(), 'initial_payment' => $index === 1 ? 8000 : 0,
+            ]);
+        }
+
+        $checkout = $service->checkout($residents[1]->id, [
+            'date' => today()->toDateString(), 'notice_date' => today()->subWeek()->toDateString(),
+            'reason' => 'Moving home', 'refund_security_deposit' => false,
+        ]);
+
+        $this->assertSame('checked_out', $residents[1]->fresh()->status);
+        $this->assertEquals(8000, $checkout->pending_refund);
+        $this->assertEquals(0, $checkout->deposit_refunded);
+        $this->assertSame('available', $room->beds[1]->fresh()->effective_status);
+        $this->assertSame('occupied', $room->beds[0]->fresh()->effective_status);
+        $this->assertSame('occupied', $room->beds[2]->fresh()->effective_status);
+        $this->assertEquals(2, $room->fresh()->occupied);
+        $this->assertEquals(1, $room->fresh()->available);
+        $this->assertDatabaseCount('allocations', 3);
+        $this->assertDatabaseCount('payments', 1);
+
+        $newResident = Resident::create(['full_name' => 'Resident D', 'mobile' => '9000000099', 'joining_date' => today()]);
+        $service->allocate($newResident->id, $room->beds[1]->id, ['date' => today()->toDateString()]);
+        $this->assertSame('occupied', $room->beds[1]->fresh()->effective_status);
+        $this->assertDatabaseCount('allocations', 4);
+        $this->assertDatabaseCount('active_allocations', 3);
+        $this->assertEquals(2, $room->beds[1]->allocations()->count());
+    }
+
+    public function test_refund_now_creates_one_deposit_refund_transaction(): void
+    {
+        $room = $this->room();
+        $resident = $this->resident();
+        $service = app(AllocationService::class);
+        $service->allocate($resident->id, $room->beds[0]->id, ['date' => today()->toDateString(), 'initial_payment' => 10000]);
+
+        $checkout = $service->checkout($resident->id, [
+            'date' => today()->toDateString(), 'reason' => 'Leaving', 'refund_security_deposit' => true,
+            'refund_amount' => 10000,
+        ]);
+
+        $this->assertEquals(10000, $checkout->deposit_refunded);
+        $this->assertEquals(0, $checkout->pending_refund);
+        $this->assertDatabaseHas('financial_transactions', [
+            'transaction_type' => 'SECURITY_DEPOSIT_REFUND', 'resident_id' => $resident->id,
+            'source_type' => Checkout::class, 'source_id' => $checkout->id, 'amount' => 10000,
+        ]);
+    }
+
+    public function test_checkout_without_deposit_succeeds_without_refund_transaction(): void
+    {
+        [$service, $room, $resident] = $this->allocatedResidentWithDeposit(0);
+        $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Leaving', 'refund_security_deposit' => false]);
+
+        $this->assertSame('checked_out', $resident->fresh()->status);
+        $this->assertSame('available', $room->beds[0]->fresh()->effective_status);
+        $this->assertSame(0, FinancialTransaction::where('transaction_type', 'SECURITY_DEPOSIT_REFUND')->count());
+    }
+
+    public function test_partial_checkout_refund_leaves_remaining_deposit_pending(): void
+    {
+        [$service, $room, $resident] = $this->allocatedResidentWithDeposit(8000);
+        $checkout = $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Leaving', 'refund_security_deposit' => true, 'refund_amount' => 5000]);
+
+        $this->assertEquals(5000, $checkout->deposit_refunded);
+        $this->assertEquals(3000, $checkout->pending_refund);
+        $this->assertEquals(3000, $service->depositHeldForResident($resident));
+        $this->assertSame('available', $room->beds[0]->fresh()->effective_status);
+    }
+
+    public function test_excess_checkout_refund_rolls_back_occupancy_and_financial_history(): void
+    {
+        [$service, $room, $resident] = $this->allocatedResidentWithDeposit(8000);
+
+        try {
+            $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Leaving', 'refund_security_deposit' => true, 'refund_amount' => 9000]);
+            $this->fail('An excessive refund was accepted.');
+        } catch (ValidationException $exception) {
+            $this->assertSame('Refund exceeds the security deposit currently held.', $exception->errors()['allocation'][0]);
+        }
+
+        $this->assertSame('active', $resident->fresh()->status);
+        $this->assertSame('occupied', $room->beds[0]->fresh()->effective_status);
+        $this->assertDatabaseCount('checkouts', 0);
+        $this->assertSame(0, FinancialTransaction::where('transaction_type', 'SECURITY_DEPOSIT_REFUND')->count());
+    }
+
+    public function test_unchecked_refund_ignores_a_hidden_excess_amount(): void
+    {
+        [$service, $room, $resident] = $this->allocatedResidentWithDeposit(8000);
+        $checkout = $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Leaving', 'refund_security_deposit' => false, 'refund_amount' => 9000]);
+
+        $this->assertEquals(0, $checkout->deposit_refunded);
+        $this->assertEquals(8000, $checkout->pending_refund);
+        $this->assertSame('available', $room->beds[0]->fresh()->effective_status);
+    }
+
+    public function test_checkout_refund_works_for_legacy_deposit_missing_ledger_link(): void
+    {
+        $room = $this->room();
+        $resident = $this->resident();
+        $service = app(AllocationService::class);
+        $service->allocate($resident->id, $room->beds[0]->id, ['date' => today()->toDateString()]);
+        Payment::withoutEvents(fn () => Payment::create(['resident_id' => $resident->id, 'type' => 'deposit', 'amount' => 8000, 'payment_date' => today(), 'method' => 'cash', 'status' => 'active']));
+
+        $checkout = $service->checkout($resident->id, ['date' => today()->toDateString(), 'reason' => 'Leaving', 'refund_security_deposit' => true, 'refund_amount' => 8000]);
+
+        $this->assertEquals(8000, $checkout->deposit_refunded);
+        $this->assertEquals(0, $service->depositHeldForResident($resident));
+        $this->assertDatabaseCount('financial_transactions', 2);
+    }
+
+    public function test_checkout_refunds_only_balance_remaining_after_previous_refund(): void
+    {
+        [$service, $room, $resident] = $this->allocatedResidentWithDeposit(8000);
+        app(AccountingService::class)->create([
+            'request_token' => (string) Str::uuid(), 'transaction_date' => today(),
+            'transaction_type' => 'SECURITY_DEPOSIT_REFUND', 'resident_id' => $resident->id,
+            'amount' => 3000, 'description' => 'Earlier partial deposit refund',
+        ]);
+
+        $checkout = $service->checkout($resident->id, [
+            'date' => today()->toDateString(), 'reason' => 'Leaving',
+            'refund_security_deposit' => true, 'refund_amount' => 5000,
+        ]);
+
+        $this->assertEquals(5000, $checkout->deposit_held);
+        $this->assertEquals(5000, $checkout->deposit_refunded);
+        $this->assertEquals(0, $service->depositHeldForResident($resident));
+        $this->assertEquals(8000, FinancialTransaction::where('transaction_type', 'SECURITY_DEPOSIT_REFUND')->sum('amount'));
+        $this->assertSame('available', $room->beds[0]->fresh()->effective_status);
+    }
+
+    private function allocatedResidentWithDeposit(float $deposit): array
+    {
+        $room = $this->room();
+        $resident = $this->resident();
+        $service = app(AllocationService::class);
+        $service->allocate($resident->id, $room->beds[0]->id, ['date' => today()->toDateString(), 'initial_payment' => $deposit]);
+
+        return [$service, $room, $resident];
     }
 
     public function test_resident_documents_are_private_and_validated(): void
@@ -180,7 +337,7 @@ return $room;
         $this->assertDatabaseCount('beds', 5);
         $room = Room::first();
         $data['capacity'] = 3;
-        $this->put('/rooms/'.$room->id,$data)->assertSessionHasErrors('capacity');
-        $this->assertEquals(5,$room->fresh()->capacity);
+        $this->put('/rooms/'.$room->id, $data)->assertSessionHasErrors('capacity');
+        $this->assertEquals(5, $room->fresh()->capacity);
     }
 }

@@ -13,6 +13,6 @@ class PaymentRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['resident_id' => 'required|exists:residents,id', 'rent_record_id' => 'nullable|required_if:type,rent|exists:rent_records,id', 'type' => 'required|in:rent,deposit', 'payment_date' => 'required|date|before_or_equal:today', 'amount' => 'required|numeric|min:0.01|max:9999999', 'method' => 'required|in:cash,upi,bank,card', 'reference' => 'nullable|string|max:255', 'notes' => 'nullable|string|max:5000'];
+        return ['request_token' => 'required|uuid|unique:payments,request_token', 'resident_id' => 'required|exists:residents,id', 'rent_record_id' => 'nullable|required_if:type,rent|exists:rent_records,id', 'type' => 'required|in:rent,deposit', 'payment_date' => 'required|date|before_or_equal:today', 'amount' => 'required|numeric|min:0.01|max:9999999', 'method' => 'required|in:cash,upi,bank,card', 'reference' => 'nullable|string|max:255', 'notes' => 'nullable|string|max:5000'];
     }
 }
