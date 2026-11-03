@@ -1,4 +1,4 @@
-# Haven · Ladies PG Management
+# SJ Ladies Hostel · Management & Website
 
 Laravel 12 / PHP 8.2+ application for MySQL 8 or MariaDB 10.4+, with a responsive Blade interface and visual room/bed allocation. CSS and browser JavaScript are served directly from `public`; no frontend build is required to use the app.
 

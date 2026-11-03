@@ -30,7 +30,7 @@ class ReportController extends Controller
                 $tab->getColumnDimension(Coordinate::stringFromColumnIndex($c))->setAutoSize(true);
             }
 
-return response()->streamDownload(fn () => (new Xlsx($sheet))->save('php://output'), $type.'.xlsx', ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
+            return response()->streamDownload(fn () => (new Xlsx($sheet))->save('php://output'), $type.'.xlsx', ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
         }
         if ($r->format === 'pdf') {
             $pdf = new Dompdf(['isRemoteEnabled' => false]);
@@ -43,6 +43,6 @@ return response()->streamDownload(fn () => (new Xlsx($sheet))->save('php://outpu
         $page = max(1, $r->integer('page', 1));
         $data['rows'] = new LengthAwarePaginator(array_slice($data['rows'], ($page - 1) * 25, 25), count($data['rows']), 25, $page, ['path' => $r->url(), 'query' => $r->query()]);
 
-        return view('reports.index',$data + ['types' => ReportService::TYPES]);
+        return view('reports.index', $data + ['types' => ReportService::TYPES]);
     }
 }

@@ -42,6 +42,6 @@ class NotificationService
 
     private function add(string $key, string $type, string $title, string $message, string $url): void
     {
-        PgNotification::firstOrCreate(['key' => $key],compact('type','title','message','url'));
+        PgNotification::firstOrCreate(['key' => $key], compact('type', 'title', 'message', 'url'));
     }
 }

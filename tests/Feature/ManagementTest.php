@@ -57,14 +57,14 @@ class ManagementTest extends TestCase
         $resident = $this->resident();
         app(AllocationService::class)->allocate($resident->id, $room->beds->first()->id, ['date' => today()->toDateString()]);
         app(BillingService::class)->generate(today()->format('Y-m'));
-        foreach (['/', '/residents', '/residents/create', "/residents/{$resident->id}", "/residents/{$resident->id}/edit", '/floors', '/rooms', '/rooms/create', "/rooms/{$room->id}/edit", '/allocation', '/floor-plan', '/billing', '/settings', '/reports'] as $url) {
+        foreach (['/dashboard', '/residents', '/residents/create', "/residents/{$resident->id}", "/residents/{$resident->id}/edit", '/floors', '/rooms', '/rooms/create', "/rooms/{$room->id}/edit", '/allocation', '/floor-plan', '/billing', '/settings', '/reports'] as $url) {
             $this->get($url)->assertOk();
         }
     }
 
     public function test_non_admin_is_forbidden(): void
     {
-        $this->actingAs(User::factory()->create())->get('/')->assertForbidden();
+        $this->actingAs(User::factory()->create())->get('/dashboard')->assertForbidden();
     }
 
     public function test_allocation_and_duplicate_bed_and_resident_protection(): void

@@ -7,18 +7,23 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResidentController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/enquiry', [HomeController::class, 'enquiry'])->name('enquiry.store');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate'])->middleware('throttle:10,1');
 });
 Route::middleware(['auth', 'can:admin'])->group(function () {
-    Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/admin', fn () => redirect()->route('dashboard'));
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/settings', [AdministrationController::class, 'settings'])->name('settings');
     Route::post('/settings/property', [AdministrationController::class, 'saveSettings'])->name('settings.property');

@@ -153,6 +153,6 @@ return new class extends Migration
     {
         foreach (['resident_documents', 'checkouts', 'payments', 'rent_records', 'room_transfers', 'active_allocations', 'allocations', 'residents', 'beds', 'rooms', 'floors'] as $table) {
             Schema::dropIfExists($table);
-        } Schema::table('users',fn (Blueprint $t) => $t->dropColumn('is_admin'));
+        } Schema::table('users', fn (Blueprint $t) => $t->dropColumn('is_admin'));
     }
 };

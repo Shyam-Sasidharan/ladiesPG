@@ -18,7 +18,7 @@ class AdministrationTest extends TestCase
         $admin = User::factory()->create(['password' => Hash::make('A-secure-test-password')]);
         $admin->forceFill(['is_admin' => true])->save();
         $this->post('/login', ['email' => $admin->email, 'password' => 'wrong'])->assertSessionHasErrors('email');
-        $this->post('/login', ['email' => $admin->email, 'password' => 'A-secure-test-password'])->assertRedirect('/');
+        $this->post('/login', ['email' => $admin->email, 'password' => 'A-secure-test-password'])->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($admin);
         $this->post('/logout')->assertRedirect('/login');
         $this->assertGuest();

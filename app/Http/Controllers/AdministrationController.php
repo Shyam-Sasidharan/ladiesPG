@@ -12,7 +12,7 @@ class AdministrationController extends Controller
 {
     public function settings()
     {
-        return view('settings', ['settings' => PgSetting::first() ?? new PgSetting(['name' => 'Haven Ladies PG'])]);
+        return view('settings', ['settings' => PgSetting::first() ?? new PgSetting(['name' => 'SJ Ladies Hostel'])]);
     }
 
     public function saveSettings(Request $r)
@@ -46,6 +46,6 @@ class AdministrationController extends Controller
     {
         $documents = ResidentDocument::with('resident')->when($r->q, fn ($q) => $q->where(fn ($q) => $q->where('name', 'like', '%'.$r->q.'%')->orWhereHas('resident', fn ($q) => $q->where('full_name', 'like', '%'.$r->q.'%')->orWhere('mobile', 'like', '%'.$r->q.'%'))))->when($r->type, fn ($q) => $q->where('type', $r->type))->latest()->paginate(20)->withQueryString();
 
-        return view('documents.index',compact('documents'));
+        return view('documents.index', compact('documents'));
     }
 }
