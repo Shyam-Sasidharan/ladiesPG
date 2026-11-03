@@ -23,6 +23,12 @@ Artisan::command('alerts:refresh', function () {
 });
 Schedule::command('alerts:refresh')->hourly()->withoutOverlapping();
 
+Artisan::command('rent:remind', function () {
+    app(NotificationService::class)->refresh();
+    $this->info('1-day advance and rent due reminders updated.');
+})->purpose('Refresh 1-day advance and due rent reminders');
+Schedule::command('rent:remind')->dailyAt('09:00')->withoutOverlapping();
+
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\PgNotification;
+use App\Models\RentRecord;
 use App\Models\Resident;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -44,5 +45,37 @@ class AdministrationTest extends TestCase
         $this->post('/notifications/'.PgNotification::first()->id.'/read')->assertSessionHasNoErrors();
         $this->assertNotNull(PgNotification::first()->read_at);
         $this->get('/documents')->assertOk();
+    }
+
+    public function test_advance_1day_rent_reminder_generation(): void
+    {
+        $admin = User::factory()->create();
+        $admin->forceFill(['is_admin' => true])->save();
+        $this->actingAs($admin);
+
+        $resident = Resident::create([
+            'full_name' => 'Ananya Sharma',
+            'mobile' => '9876543210',
+            'joining_date' => today()->subMonth()->toDateString(),
+            'status' => 'active',
+        ]);
+
+        RentRecord::create([
+            'resident_id' => $resident->id,
+            'month' => today()->startOfMonth()->toDateString(),
+            'due_date' => today()->addDay()->toDateString(),
+            'amount' => 6500,
+            'late_fee' => 0,
+        ]);
+
+        $this->post('/notifications/refresh')->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('notifications', [
+            'type' => 'reminder',
+            'title' => 'Rent Due Tomorrow: Ananya Sharma',
+        ]);
+
+        $this->get('/dashboard')->assertOk()->assertSee('rent due tomorrow (1-day advance reminder)');
+        $this->get('/billing?status=due_tomorrow')->assertOk()->assertSee('Ananya Sharma')->assertSee('💬 Remind');
     }
 }

@@ -18,6 +18,8 @@ class DashboardController extends Controller
         $stats = ['Total Residents' => Resident::count(), 'Active Residents' => Resident::whereIn('status', ['active', 'notice_period'])->count(), 'Available Beds' => $beds->filter(fn ($b) => $b->effective_status === 'available')->count(), 'Occupied Beds' => $beds->filter(fn ($b) => $b->effective_status === 'occupied')->count(), 'Total Rooms' => $rooms->count(), 'Available Rooms' => $rooms->filter(fn ($r) => $r->available > 0)->count(), 'Monthly Collection' => Payment::where('type', 'rent')->where('status', 'active')->whereBetween('payment_date', [today()->startOfMonth(), today()->endOfMonth()])->sum('amount'), 'Pending Payments' => RentRecord::with('payments')->get()->sum('pending')];
         $upcoming = Resident::whereIn('status', ['active', 'notice_period'])->whereBetween('expected_checkout', [today(), today()->addDays(30)])->orderBy('expected_checkout')->limit(6)->get();
         $recent = Resident::with('activeAllocation.bed.room')->latest()->limit(5)->get();
+        $dueTomorrow = RentRecord::with('resident', 'payments')->whereDate('due_date', today()->addDay())->get()->filter(fn ($r) => $r->pending > 0);
+        $dueToday = RentRecord::with('resident', 'payments')->whereDate('due_date', today())->get()->filter(fn ($r) => $r->pending > 0);
         $overdue = RentRecord::with('resident', 'payments')->whereDate('due_date', '<', today())->get()->filter(fn ($r) => $r->pending > 0);
         $missing = Resident::whereIn('status', ['active', 'notice_period'])->whereDoesntHave('documents')->count();
         $expiring = ResidentDocument::where('type', 'agreement')->whereBetween('expires_at', [today(), today()->addDays(30)])->count();
@@ -27,6 +29,6 @@ class DashboardController extends Controller
             $chart[] = ['label' => $date->format('M'), 'value' => Payment::where('type', 'rent')->where('status', 'active')->whereBetween('payment_date', [$date->copy()->startOfMonth(), $date->copy()->endOfMonth()])->sum('amount')];
         }
 
-        return view('dashboard', compact('stats', 'floors', 'beds', 'upcoming', 'recent', 'overdue', 'missing', 'expiring', 'chart'));
+        return view('dashboard', compact('stats', 'floors', 'beds', 'upcoming', 'recent', 'dueTomorrow', 'dueToday', 'overdue', 'missing', 'expiring', 'chart'));
     }
 }
