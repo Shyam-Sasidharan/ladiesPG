@@ -3,40 +3,41 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SJ Ladies Hostel · Safe, Comfortable & Homely Stay for Women</title>
+    <title>SJ Ladies Hostel · A Safe & Comfortable Stay for Women in Kochi</title>
     <meta name="description" content="SJ Ladies Hostel offers safe, premium, and homely accommodation for students and working women in Kochi. Attached bathrooms in all rooms, 3 daily home-cooked meals, Wi-Fi, and 24/7 security.">
     <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    <!-- Google Fonts: Plus Jakarta Sans (Clean, Modern, Premium) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* SJ Logo Theme Colors */
-            --sj-pine: #133e2b;          /* Deep Pine Green from "S" & "LADIES" */
-            --sj-pine-hover: #0d2c1e;
-            --sj-pine-light: #ecf5f0;    /* Soft pine mint */
-            --sj-pine-border: #c8dfd3;
+            /* EXACT COLOR THEME FROM SJ LADIES HOSTEL LOGO */
+            --logo-green: #1a4028;          /* Forest Green from "S", roof & "LADIES" */
+            --logo-green-hover: #12301e;
+            --logo-green-light: #eaf3ed;    /* Soft mint sage tint */
+            --logo-green-border: #bfdcce;
 
-            --sj-rose: #d45b73;          /* Dusty Rose Pink from "J" & "HOSTEL" */
-            --sj-rose-hover: #be4a61;
-            --sj-rose-light: #fdf2f4;    /* Soft blush rose */
-            --sj-rose-border: #f8c9d3;
+            --logo-pink: #de7b85;           /* Coral Rose from "J", "HOSTEL", window & heart */
+            --logo-pink-dark: #c45865;      /* High-contrast Rose for text & buttons */
+            --logo-pink-hover: #b04653;
+            --logo-pink-light: #fdf1f3;     /* Soft blush tint */
+            --logo-pink-border: #f8c8cf;
 
             --wa-green: #25d366;
             --wa-hover: #1ebd5a;
 
-            --bg: #fafcfb;
+            --bg: #f8fbf9;                  /* Fresh, clean canvas */
             --surface: #ffffff;
 
-            --text-heading: #0e2017;
-            --text-body: #2e3e35;
-            --text-muted: #62776c;
+            --text-heading: #0f271a;        /* Deep forest charcoal */
+            --text-body: #2e3e35;           /* Natural readable charcoal */
+            --text-muted: #5f7467;          /* Sage muted text */
 
-            --border: #e2ede7;
-            --border-light: #eff5f2;
+            --border: #e1ede6;              /* Soft brand-tinted border */
+            --border-light: #eef5f1;
 
             --radius-sm: 8px;
             --radius-md: 12px;
@@ -44,10 +45,10 @@
             --radius-xl: 24px;
             --radius-pill: 9999px;
 
-            --shadow-xs: 0 1px 2px rgba(19, 62, 43, 0.04);
-            --shadow-sm: 0 2px 8px -2px rgba(19, 62, 43, 0.06);
-            --shadow-md: 0 10px 24px -4px rgba(19, 62, 43, 0.08);
-            --shadow-lg: 0 18px 38px -6px rgba(19, 62, 43, 0.12);
+            --shadow-xs: 0 1px 2px rgba(26, 64, 40, 0.04);
+            --shadow-sm: 0 2px 8px -2px rgba(26, 64, 40, 0.06);
+            --shadow-md: 0 10px 24px -4px rgba(26, 64, 40, 0.08);
+            --shadow-lg: 0 18px 38px -6px rgba(26, 64, 40, 0.12);
         }
 
         * {
@@ -96,15 +97,32 @@
             padding: 0 24px;
         }
 
-        /* Top Bar */
-        .top-bar {
-            background: #0f271c;
+        /* Logo Signature Divider (Heart in center) */
+        .logo-heart-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 8px auto 14px;
+            color: var(--logo-pink);
+            font-size: 13px;
+        }
+        .logo-heart-divider::before, .logo-heart-divider::after {
+            content: '';
+            width: 48px;
+            height: 1px;
+            background: var(--logo-pink-border);
+        }
+
+        /* Top Announcement Strip */
+        .top-strip {
+            background: var(--logo-green);
             color: #d6e4dc;
             font-size: 12.5px;
             padding: 8px 0;
-            border-bottom: 1px solid rgba(212, 91, 115, 0.2);
+            border-bottom: 2px solid var(--logo-pink);
         }
-        .top-bar-inner {
+        .top-strip-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -147,22 +165,21 @@
             color: #ffffff;
         }
         .top-login a {
-            color: #fce7eb;
-            font-weight: 600;
-            font-size: 12px;
-            padding: 3px 10px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11.5px;
+            padding: 3px 12px;
             border-radius: 6px;
-            background: rgba(212, 91, 115, 0.2);
-            border: 1px solid rgba(212, 91, 115, 0.35);
+            background: var(--logo-pink-dark);
+            transition: background 0.2s;
         }
         .top-login a:hover {
-            background: rgba(212, 91, 115, 0.35);
-            color: #ffffff;
+            background: var(--logo-pink-hover);
         }
 
         /* Modern Sticky Header */
         .header {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
@@ -181,43 +198,52 @@
             align-items: center;
             gap: 13px;
         }
-        .brand-logo {
-            width: 50px;
-            height: 50px;
+        .brand-logo-frame {
+            width: 52px;
+            height: 52px;
             border-radius: 12px;
             overflow: hidden;
             background: #ffffff;
             box-shadow: var(--shadow-sm);
-            border: 1.5px solid var(--border);
+            border: 2px solid var(--logo-green-border);
             padding: 2px;
             flex-shrink: 0;
-            transition: transform 0.2s;
+            transition: all 0.2s;
         }
-        .brand:hover .brand-logo {
+        .brand:hover .brand-logo-frame {
             transform: scale(1.03);
-            border-color: var(--sj-rose-border);
+            border-color: var(--logo-pink);
         }
-        .brand-logo img {
+        .brand-logo-frame img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
-        .brand-text h1 {
+        .brand-title-box h1 {
             font-size: 21px;
             font-weight: 800;
             letter-spacing: -0.03em;
-            color: var(--sj-pine);
             line-height: 1.15;
         }
-        .brand-text h1 span {
-            color: var(--sj-rose);
+        .brand-title-box h1 .b-green {
+            color: var(--logo-green);
         }
-        .brand-text p {
-            font-size: 11.5px;
+        .brand-title-box h1 .b-pink {
+            color: var(--logo-pink-dark);
+        }
+        .brand-title-box p {
+            font-size: 11px;
             font-weight: 600;
-            color: var(--sj-rose);
-            letter-spacing: 0.01em;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
             margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .brand-title-box p .mini-heart {
+            color: var(--logo-pink-dark);
+            font-size: 11px;
         }
 
         .nav-menu {
@@ -234,7 +260,7 @@
             padding: 6px 0;
         }
         .nav-menu a:hover {
-            color: var(--sj-pine);
+            color: var(--logo-green);
         }
         .nav-menu a::after {
             content: '';
@@ -243,7 +269,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--sj-pine), var(--sj-rose));
+            background: linear-gradient(90deg, var(--logo-green), var(--logo-pink));
             transition: width 0.25s ease;
             border-radius: 2px;
         }
@@ -257,13 +283,13 @@
             gap: 10px;
         }
 
-        /* Buttons */
+        /* Buttons matching Logo Palette */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 11px 22px;
+            padding: 10px 20px;
             border-radius: var(--radius-md);
             font-size: 13.5px;
             font-weight: 700;
@@ -272,27 +298,35 @@
             transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
         }
-        .btn-pine {
-            background: var(--sj-pine);
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(19, 62, 43, 0.22);
+        .btn-green {
+            background: var(--logo-green);
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(26, 64, 40, 0.22);
         }
-        .btn-pine:hover {
-            background: var(--sj-pine-hover);
+        .btn-green:hover {
+            background: var(--logo-green-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(19, 62, 43, 0.32);
-            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(26, 64, 40, 0.32);
         }
-        .btn-rose-outline {
+        .btn-pink {
+            background: var(--logo-pink-dark);
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(196, 88, 101, 0.25);
+        }
+        .btn-pink:hover {
+            background: var(--logo-pink-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(196, 88, 101, 0.35);
+        }
+        .btn-pink-outline {
             background: #ffffff;
-            border-color: var(--sj-rose-border);
-            color: var(--sj-rose-dark);
+            border-color: var(--logo-pink-border);
+            color: var(--logo-pink-dark) !important;
             box-shadow: var(--shadow-xs);
         }
-        .btn-rose-outline:hover {
-            background: var(--sj-rose-light);
-            border-color: var(--sj-rose);
-            color: var(--sj-rose-dark);
+        .btn-pink-outline:hover {
+            background: var(--logo-pink-light);
+            border-color: var(--logo-pink);
             transform: translateY(-1px);
         }
         .btn-wa {
@@ -313,9 +347,9 @@
             box-shadow: var(--shadow-xs);
         }
         .btn-outline:hover {
-            background: var(--sj-pine-light);
-            border-color: var(--sj-pine-border);
-            color: var(--sj-pine);
+            background: var(--logo-green-light);
+            border-color: var(--logo-green-border);
+            color: var(--logo-green);
             transform: translateY(-1px);
         }
         .btn-sm {
@@ -327,10 +361,10 @@
             width: 100%;
         }
 
-        /* Hero Section (Minimal, Punchy & High-Impact) */
+        /* Hero Section (Clean Logo Harmonized First Look) */
         .hero {
-            padding: 50px 0 55px;
-            background: linear-gradient(180deg, #ffffff 0%, #f6faf7 60%, #fbf4f6 100%);
+            padding: 48px 0 54px;
+            background: linear-gradient(180deg, #ffffff 0%, #f4f8f5 55%, #fdf5f7 100%);
             border-bottom: 1px solid var(--border);
         }
         .hero-grid {
@@ -344,52 +378,52 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--sj-rose-light);
-            border: 1px solid var(--sj-rose-border);
-            color: var(--sj-rose-dark);
-            padding: 6px 14px;
+            background: var(--logo-pink-light);
+            border: 1px solid var(--logo-pink-border);
+            color: var(--logo-pink-dark);
+            padding: 5px 14px;
             border-radius: var(--radius-pill);
             font-size: 12px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .hero h2 {
-            font-size: 46px;
+            font-size: 44px;
             letter-spacing: -0.04em;
             color: var(--text-heading);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             line-height: 1.15;
         }
-        .hero h2 .pine-word {
-            color: var(--sj-pine);
+        .hero h2 .logo-g {
+            color: var(--logo-green);
         }
-        .hero h2 .rose-word {
-            color: var(--sj-rose);
+        .hero h2 .logo-p {
+            color: var(--logo-pink-dark);
         }
 
         .hero-tagline {
-            font-size: 17px;
+            font-size: 16.5px;
             color: var(--text-muted);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             max-width: 500px;
             line-height: 1.55;
             font-weight: 500;
         }
 
-        /* Minimal 4-Pill Highlights */
+        /* Hero Chips */
         .hero-quick-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 28px;
+            gap: 8px;
+            margin-bottom: 26px;
         }
         .hero-chip {
             background: #ffffff;
             border: 1px solid var(--border);
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: var(--radius-pill);
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-heading);
             display: inline-flex;
@@ -397,12 +431,22 @@
             gap: 6px;
             box-shadow: var(--shadow-xs);
         }
+        .hero-chip.pink-chip {
+            border-color: var(--logo-pink-border);
+            background: var(--logo-pink-light);
+            color: var(--logo-pink-dark);
+        }
+        .hero-chip.green-chip {
+            border-color: var(--logo-green-border);
+            background: var(--logo-green-light);
+            color: var(--logo-green);
+        }
 
         .hero-cta-row {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 28px;
+            margin-bottom: 26px;
         }
 
         .hero-stats-row {
@@ -416,14 +460,19 @@
             background: #ffffff;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 10px 12px;
+            padding: 9px 12px;
             text-align: center;
             box-shadow: var(--shadow-xs);
+            transition: all 0.2s;
+        }
+        .stat-capsule:hover {
+            border-color: var(--logo-green-border);
+            transform: translateY(-2px);
         }
         .stat-num {
             font-size: 20px;
             font-weight: 800;
-            color: var(--sj-pine);
+            color: var(--logo-green);
             line-height: 1.1;
         }
         .stat-label {
@@ -431,10 +480,9 @@
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
         }
 
-        /* Hero Image with Minimalist Floating Cards */
+        /* Hero Image Container with Dual Logo Colored Badges */
         .hero-visual-wrap {
             position: relative;
         }
@@ -443,13 +491,13 @@
             border-radius: var(--radius-xl);
             padding: 8px;
             box-shadow: var(--shadow-lg);
-            border: 2px solid var(--border);
+            border: 2px solid var(--logo-green-border);
             overflow: hidden;
             position: relative;
         }
         .hero-photo-frame img {
             width: 100%;
-            height: 440px;
+            height: 430px;
             object-fit: cover;
             border-radius: calc(var(--radius-xl) - 8px);
             transition: transform 0.4s ease;
@@ -463,7 +511,7 @@
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            padding: 10px 16px;
+            padding: 10px 15px;
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-md);
             display: flex;
@@ -474,12 +522,12 @@
         .pill-top {
             top: 18px;
             left: -14px;
-            border-left: 3px solid var(--sj-pine);
+            border-left: 3.5px solid var(--logo-green);
         }
         .pill-bottom {
             bottom: 18px;
             right: -12px;
-            border-left: 3px solid var(--sj-rose);
+            border-left: 3.5px solid var(--logo-pink);
         }
         .fp-icon {
             font-size: 20px;
@@ -498,35 +546,35 @@
 
         /* Section Commons */
         section {
-            padding: 58px 0;
+            padding: 56px 0;
         }
         .section-header {
             text-align: center;
             max-width: 580px;
-            margin: 0 auto 36px;
+            margin: 0 auto 34px;
         }
         .section-tag {
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: var(--sj-pine);
-            background: var(--sj-pine-light);
+            color: var(--logo-green);
+            background: var(--logo-green-light);
             padding: 4px 12px;
             border-radius: var(--radius-pill);
             display: inline-block;
-            margin-bottom: 8px;
-            border: 1px solid var(--sj-pine-border);
+            margin-bottom: 6px;
+            border: 1px solid var(--logo-green-border);
         }
         .section-tag.rose-tag {
-            color: var(--sj-rose-dark);
-            background: var(--sj-rose-light);
-            border-color: var(--sj-rose-border);
+            color: var(--logo-pink-dark);
+            background: var(--logo-pink-light);
+            border-color: var(--logo-pink-border);
         }
         .section-header h2 {
-            font-size: 30px;
+            font-size: 29px;
             letter-spacing: -0.03em;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: var(--text-heading);
         }
         .section-header p {
@@ -536,7 +584,7 @@
 
         /* 4-Pillars Strip (Minimal) */
         .pillars-section {
-            padding: 26px 0;
+            padding: 24px 0;
             background: #ffffff;
             border-bottom: 1px solid var(--border);
         }
@@ -559,7 +607,10 @@
             background: #ffffff;
             transform: translateY(-2px);
             box-shadow: var(--shadow-sm);
-            border-color: var(--sj-pine-border);
+            border-color: var(--logo-green-border);
+        }
+        .pillar-card.pink-accent:hover {
+            border-color: var(--logo-pink-border);
         }
         .pillar-icon {
             font-size: 22px;
@@ -595,11 +646,15 @@
             transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
         }
         .photo-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--sj-pine-border);
+            border-color: var(--logo-green-border);
+        }
+        .photo-card.pink-border-card:hover {
+            border-color: var(--logo-pink-border);
         }
         .photo-card-img {
             position: relative;
@@ -616,11 +671,34 @@
         .photo-card:hover .photo-card-img img {
             transform: scale(1.04);
         }
+        .photo-overlay-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--logo-green);
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-sm);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: all 0.22s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid var(--logo-green-border);
+        }
+        .photo-card:hover .photo-overlay-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .photo-tag-pill {
             position: absolute;
             top: 12px;
             left: 12px;
-            background: rgba(19, 62, 43, 0.88);
+            background: rgba(26, 64, 40, 0.9);
             color: #ffffff;
             font-size: 11px;
             font-weight: 700;
@@ -628,31 +706,158 @@
             border-radius: 6px;
             backdrop-filter: blur(4px);
         }
+        .photo-tag-pill.pink-tag {
+            background: rgba(196, 88, 101, 0.92);
+        }
         .photo-card-body {
-            padding: 18px 20px;
+            padding: 16px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         .photo-card-body h3 {
-            font-size: 16px;
+            font-size: 15.5px;
             color: var(--text-heading);
         }
         .photo-chip {
             font-size: 11.5px;
             font-weight: 600;
-            color: var(--sj-pine);
-            background: var(--sj-pine-light);
+            color: var(--logo-green);
+            background: var(--logo-green-light);
             padding: 4px 10px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--sj-pine-border);
+            border: 1px solid var(--logo-green-border);
         }
+        .photo-chip.pink-chip {
+            color: var(--logo-pink-dark);
+            background: var(--logo-pink-light);
+            border-color: var(--logo-pink-border);
+        }
+
+        /* Lightbox Modal */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 39, 26, 0.94);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .lightbox-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .lightbox-content {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            position: relative;
+            border: 2px solid var(--logo-green-border);
+            animation: lbZoomIn 0.25s ease;
+        }
+        @keyframes lbZoomIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .lightbox-img-wrap {
+            width: 100%;
+            max-height: 65vh;
+            background: #0d1e14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .lightbox-img-wrap img {
+            max-height: 65vh;
+            width: 100%;
+            object-fit: contain;
+        }
+        .lightbox-caption {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            gap: 16px;
+        }
+        .lightbox-caption h4 {
+            font-size: 17px;
+            color: var(--logo-green);
+            margin-bottom: 2px;
+        }
+        .lightbox-caption p {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+        .lightbox-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            color: #ffffff;
+            border: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .lightbox-close-btn:hover {
+            background: var(--logo-pink-dark);
+            transform: scale(1.1);
+        }
+        .lightbox-nav-btn {
+            position: absolute;
+            top: 45%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--logo-green);
+            border: 1px solid var(--border);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+            z-index: 10;
+            line-height: 1;
+        }
+        .lightbox-nav-btn:hover {
+            background: var(--logo-pink-dark);
+            color: #ffffff;
+            border-color: var(--logo-pink-dark);
+        }
+        .lightbox-prev { left: 16px; }
+        .lightbox-next { right: 16px; }
 
         /* Floor Filter Controls */
         .filter-wrapper {
             display: flex;
             justify-content: center;
-            margin-bottom: 28px;
+            margin-bottom: 26px;
         }
         .filter-capsule {
             display: inline-flex;
@@ -676,22 +881,22 @@
             font-family: inherit;
         }
         .filter-pill-btn:hover {
-            color: var(--sj-pine);
+            color: var(--logo-green);
         }
         .filter-pill-btn.active {
-            background: var(--sj-pine);
+            background: var(--logo-green);
             color: #ffffff;
-            box-shadow: 0 2px 8px rgba(19, 62, 43, 0.25);
+            box-shadow: 0 2px 8px rgba(26, 64, 40, 0.25);
         }
 
         /* Floor Sections */
         .floor-group {
-            margin-bottom: 40px;
+            margin-bottom: 38px;
         }
         .floor-title-strip {
             background: #ffffff;
             border: 1px solid var(--border);
-            border-left: 4px solid var(--sj-pine);
+            border-left: 4px solid var(--logo-green);
             border-radius: var(--radius-md);
             padding: 12px 20px;
             margin-bottom: 18px;
@@ -701,7 +906,7 @@
             box-shadow: var(--shadow-xs);
         }
         .floor-title-strip.first-floor-strip {
-            border-left-color: var(--sj-rose);
+            border-left-color: var(--logo-pink-dark);
         }
         .floor-title-strip h3 {
             font-size: 17px;
@@ -710,19 +915,19 @@
         .floor-badge-tag {
             font-size: 11.5px;
             font-weight: 700;
-            color: var(--sj-pine);
-            background: var(--sj-pine-light);
-            border: 1px solid var(--sj-pine-border);
+            color: var(--logo-green);
+            background: var(--logo-green-light);
+            border: 1px solid var(--logo-green-border);
             padding: 4px 12px;
             border-radius: var(--radius-pill);
         }
-        .floor-badge-tag.rose-tag {
-            color: var(--sj-rose-dark);
-            background: var(--sj-rose-light);
-            border-color: var(--sj-rose-border);
+        .floor-badge-tag.pink-tag {
+            color: var(--logo-pink-dark);
+            background: var(--logo-pink-light);
+            border-color: var(--logo-pink-border);
         }
 
-        /* Room Cards Grid (Minimal & Scannable) */
+        /* Room Cards Grid (Logo Themed) */
         .room-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -730,7 +935,7 @@
         }
         .room-card {
             background: #ffffff;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-lg);
             padding: 20px;
             box-shadow: var(--shadow-sm);
@@ -742,10 +947,10 @@
         .room-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--sj-pine-border);
+            border-color: var(--logo-green-border);
         }
-        .room-card.rose-card-hover:hover {
-            border-color: var(--sj-rose-border);
+        .room-card.pink-hover:hover {
+            border-color: var(--logo-pink-border);
         }
         .room-card-head {
             display: flex;
@@ -766,15 +971,15 @@
             border-radius: var(--radius-pill);
             text-transform: uppercase;
         }
-        .tag-pine {
-            background: var(--sj-pine-light);
-            color: var(--sj-pine);
-            border: 1px solid var(--sj-pine-border);
+        .tag-green {
+            background: var(--logo-green-light);
+            color: var(--logo-green);
+            border: 1px solid var(--logo-green-border);
         }
-        .tag-rose {
-            background: var(--sj-rose-light);
-            color: var(--sj-rose-dark);
-            border: 1px solid var(--sj-rose-border);
+        .tag-pink {
+            background: var(--logo-pink-light);
+            color: var(--logo-pink-dark);
+            border: 1px solid var(--logo-pink-border);
         }
 
         /* Availability Strip */
@@ -811,7 +1016,7 @@
             background: currentColor;
         }
 
-        /* Dual Price Container (Crisp & Clear) */
+        /* Dual Price Container */
         .room-dual-price {
             background: #fafcfb;
             border: 1px solid #edf4f0;
@@ -838,10 +1043,10 @@
         .d-price-val {
             font-size: 16px;
             font-weight: 800;
-            color: var(--sj-pine);
+            color: var(--logo-green);
         }
-        .d-price-val.rose-price {
-            color: var(--sj-rose-dark);
+        .d-price-val.pink-val {
+            color: var(--logo-pink-dark);
         }
         .d-price-val small {
             font-size: 10.5px;
@@ -849,7 +1054,7 @@
             color: var(--text-muted);
         }
 
-        /* Quick Inclusions Pills */
+        /* Micro Inclusions */
         .room-micro-pills {
             display: flex;
             flex-wrap: wrap;
@@ -881,7 +1086,7 @@
         }
         .pricing-table-card {
             background: #ffffff;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
@@ -893,11 +1098,11 @@
             text-align: left;
         }
         table.pricing-table-clean th {
-            background: var(--sj-pine-light);
+            background: var(--logo-green-light);
             padding: 14px 18px;
             font-weight: 700;
-            color: var(--sj-pine);
-            border-bottom: 2px solid var(--sj-pine-border);
+            color: var(--logo-green);
+            border-bottom: 2px solid var(--logo-green-border);
             font-size: 12.5px;
             text-transform: uppercase;
             letter-spacing: 0.04em;
@@ -911,15 +1116,15 @@
         table.pricing-table-clean tr:hover td {
             background: #fbfdfc;
         }
-        .table-rate-pine {
+        .table-rate-green {
             font-size: 16px;
             font-weight: 800;
-            color: var(--sj-pine);
+            color: var(--logo-green);
         }
-        .table-rate-rose {
+        .table-rate-pink {
             font-size: 16px;
             font-weight: 800;
-            color: var(--sj-rose-dark);
+            color: var(--logo-pink-dark);
         }
         .table-rate-plain {
             font-size: 14.5px;
@@ -927,7 +1132,7 @@
             color: var(--text-muted);
         }
 
-        /* Amenities Section (8 Clean Bento Badges) */
+        /* Amenities Section (8 Clean Bento Badges with Logo Green & Pink) */
         .amenities-section {
             background: var(--bg);
         }
@@ -938,9 +1143,9 @@
         }
         .amenity-card-clean {
             background: #ffffff;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 18px;
+            padding: 16px 18px;
             transition: all 0.2s ease;
             box-shadow: var(--shadow-xs);
             display: flex;
@@ -950,28 +1155,28 @@
         .amenity-card-clean:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
-            border-color: var(--sj-pine-border);
+            border-color: var(--logo-green-border);
         }
-        .amenity-card-clean.rose-tint:hover {
-            border-color: var(--sj-rose-border);
+        .amenity-card-clean.pink-card:hover {
+            border-color: var(--logo-pink-border);
         }
         .amenity-icon-box {
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: var(--sj-pine-light);
-            color: var(--sj-pine);
+            background: var(--logo-green-light);
+            color: var(--logo-green);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             flex-shrink: 0;
-            border: 1px solid var(--sj-pine-border);
+            border: 1px solid var(--logo-green-border);
         }
-        .amenity-card-clean.rose-tint .amenity-icon-box {
-            background: var(--sj-rose-light);
-            color: var(--sj-rose-dark);
-            border-color: var(--sj-rose-border);
+        .amenity-card-clean.pink-card .amenity-icon-box {
+            background: var(--logo-pink-light);
+            color: var(--logo-pink-dark);
+            border-color: var(--logo-pink-border);
         }
         .amenity-text h4 {
             font-size: 14.5px;
@@ -984,7 +1189,7 @@
             display: block;
         }
 
-        /* Contact & Location Section (Clean 2-Column) */
+        /* Contact & Location Section */
         .contact-section {
             background: var(--bg);
         }
@@ -996,14 +1201,14 @@
         }
         .contact-info-card {
             background: #ffffff;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-xl);
             padding: 28px;
             box-shadow: var(--shadow-sm);
         }
         .contact-info-card h3 {
             font-size: 20px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: var(--text-heading);
         }
         .contact-info-card p.intro {
@@ -1030,8 +1235,11 @@
         }
         .contact-link-card:hover {
             background: #ffffff;
-            border-color: var(--sj-pine-border);
+            border-color: var(--logo-green-border);
             transform: translateX(3px);
+        }
+        .contact-link-card.pink-border:hover {
+            border-color: var(--logo-pink-border);
         }
         .cl-icon-box {
             font-size: 18px;
@@ -1076,7 +1284,7 @@
         /* Quick Booking Form Card */
         .enquiry-form-card {
             background: #ffffff;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-xl);
             padding: 28px;
             box-shadow: var(--shadow-md);
@@ -1119,8 +1327,8 @@
             transition: all 0.2s;
         }
         .form-field-group input:focus, .form-field-group select:focus, .form-field-group textarea:focus {
-            border-color: var(--sj-pine);
-            box-shadow: 0 0 0 3px rgba(19, 62, 43, 0.12);
+            border-color: var(--logo-green);
+            box-shadow: 0 0 0 3px rgba(26, 64, 40, 0.12);
         }
         .form-field-group textarea {
             min-height: 70px;
@@ -1142,10 +1350,10 @@
 
         /* Clean Modern Footer */
         footer.site-footer {
-            background: #0f251a;
+            background: var(--logo-green);
             color: #cad8ce;
             padding: 40px 0 24px;
-            border-top: 2px solid var(--sj-rose);
+            border-top: 3px solid var(--logo-pink);
             font-size: 12.5px;
         }
         .footer-cols-grid {
@@ -1153,7 +1361,7 @@
             grid-template-columns: 1.4fr 1fr 1fr;
             gap: 32px;
             padding-bottom: 28px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             margin-bottom: 18px;
         }
         .footer-brand-title {
@@ -1163,20 +1371,20 @@
             margin-bottom: 10px;
         }
         .footer-brand-title img {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 8px;
             background: #fff;
             padding: 2px;
         }
         .footer-brand-title strong {
-            font-size: 16px;
+            font-size: 16.5px;
             color: #ffffff;
             display: block;
         }
         .footer-brand-title span {
             font-size: 11px;
-            color: var(--sj-rose-border);
+            color: #ffd2da;
         }
         .footer-col h4 {
             font-size: 13px;
@@ -1193,7 +1401,7 @@
             gap: 7px;
         }
         .footer-links-ul a {
-            color: #9cb2a5;
+            color: #a4bea9;
         }
         .footer-links-ul a:hover {
             color: #ffffff;
@@ -1205,7 +1413,7 @@
             flex-wrap: wrap;
             gap: 12px;
             font-size: 11.5px;
-            color: #799182;
+            color: #8da493;
         }
 
         /* Floating WhatsApp Button */
@@ -1299,15 +1507,15 @@
             .header-inner {
                 height: 70px;
             }
-            .brand-logo {
+            .brand-logo-frame {
                 width: 42px;
                 height: 42px;
             }
-            .brand-text h1 {
+            .brand-title-box h1 {
                 font-size: 18px;
             }
             .hero {
-                padding: 32px 0 38px;
+                padding: 30px 0 36px;
             }
             .hero h2 {
                 font-size: 30px;
@@ -1330,7 +1538,7 @@
             .form-row-grid {
                 grid-template-columns: 1fr;
             }
-            .top-bar-inner {
+            .top-strip-inner {
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -1351,16 +1559,16 @@
 </head>
 <body>
 
-    <!-- Top Announcement Strip -->
-    <div class="top-bar">
-        <div class="container top-bar-inner">
+    <!-- Top Announcement Strip (Logo Green with Pink Border) -->
+    <div class="top-strip">
+        <div class="container top-strip-inner">
             <div class="top-badge">
                 <span class="live-dot"></span>
-                <span>Admissions Open for 2026-2027 · Women & Students</span>
+                <span>Admissions Open for 2026-2027 · Exclusively for Women & Students</span>
             </div>
             <div class="top-contacts">
                 <a href="tel:+918590621496">📞 <strong>+91 85906 21496</strong></a>
-                <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20would%20like%20to%20enquire%20about%20room%20availability" target="_blank" style="color:#bbf7d0;">
+                <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20would%20like%20to%20enquire%20about%20room%20availability" target="_blank" style="color:#ffd2da;">
                     💬 WhatsApp: <strong>8590621496</strong>
                 </a>
                 <a href="mailto:sjladieshostel07@gmail.com">✉️ <strong>sjladieshostel07@gmail.com</strong></a>
@@ -1375,16 +1583,23 @@
         </div>
     </div>
 
-    <!-- Main Navigation Header -->
+    <!-- Main Navigation Header (Clean Logo Branding) -->
     <header class="header">
         <div class="container header-inner">
             <a href="{{ route('home') }}" class="brand">
-                <div class="brand-logo">
+                <div class="brand-logo-frame">
                     <img src="{{ asset('images/logo.jpg') }}" alt="SJ Ladies Hostel Logo">
                 </div>
-                <div class="brand-text">
-                    <h1>SJ <span>Ladies Hostel</span></h1>
-                    <p>A Safe & Comfortable Stay for Women 🌸</p>
+                <div class="brand-title-box">
+                    <h1>
+                        <span class="b-green">S</span><span class="b-pink">J</span>
+                        <span class="b-green" style="margin-left:4px;">LADIES</span>
+                        <span class="b-pink">HOSTEL</span>
+                    </h1>
+                    <p>
+                        A Safe & Comfortable Stay for Women
+                        <span class="mini-heart">❤</span>
+                    </p>
                 </div>
             </a>
 
@@ -1401,14 +1616,14 @@
                     <svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:currentColor;"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.434 5.176L2 22l4.957-1.399C8.423 21.493 10.15 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
                     <span>WhatsApp</span>
                 </a>
-                <a href="tel:+918590621496" class="btn btn-rose-outline">
+                <a href="tel:+918590621496" class="btn btn-pink-outline">
                     📞 Call
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section (Minimal Text, Maximum Visual Impact) -->
+    <!-- Hero Section (Exact Logo Palette Harmony) -->
     <section class="hero">
         <div class="container hero-grid">
             <div>
@@ -1416,16 +1631,16 @@
                     <span>❤ Safe & Comfortable Stay for Women in Kochi</span>
                 </div>
 
-                <h2>Safe. Homely.<br><span class="rose-word">Comfortable.</span></h2>
+                <h2><span class="logo-g">Safe.</span> <span class="logo-p">Homely.</span><br><span class="logo-g">Comfortable.</span></h2>
                 <p class="hero-tagline">
                     Ground Floor & 1st Floor rooms with attached washrooms, 3 fresh daily meals, high-speed Wi-Fi & 24/7 CCTV security.
                 </p>
 
                 <div class="hero-quick-chips">
-                    <span class="hero-chip">🍲 3 Daily Home Meals</span>
-                    <span class="hero-chip">🚿 Attached Bath & Geyser</span>
-                    <span class="hero-chip">🛡️ 24/7 CCTV & Warden</span>
-                    <span class="hero-chip">📶 High-Speed Wi-Fi</span>
+                    <span class="hero-chip green-chip">🍲 3 Daily Home Meals</span>
+                    <span class="hero-chip pink-chip">🚿 Attached Bath & Geyser</span>
+                    <span class="hero-chip green-chip">🛡️ 24/7 CCTV & Warden</span>
+                    <span class="hero-chip pink-chip">📶 High-Speed Wi-Fi</span>
                 </div>
 
                 <div class="hero-cta-row">
@@ -1457,7 +1672,7 @@
                 </div>
             </div>
 
-            <!-- Hero Real Photo Card -->
+            <!-- Hero Real Photo Card with Logo Colored Badges -->
             <div class="hero-visual-wrap">
                 <div class="floating-pill pill-top">
                     <span class="fp-icon">🛡️</span>
@@ -1467,7 +1682,7 @@
                     </div>
                 </div>
 
-                <div class="hero-photo-frame">
+                <div class="hero-photo-frame" onclick="openLightbox(0)" style="cursor:pointer;" title="Click to view full photo">
                     <img src="{{ asset('images/building.jpg') }}" alt="SJ Ladies Hostel Exterior Building">
                 </div>
 
@@ -1492,7 +1707,7 @@
                     <span>Direct admission with clear rent</span>
                 </div>
             </div>
-            <div class="pillar-card">
+            <div class="pillar-card pink-accent">
                 <span class="pillar-icon">🚿</span>
                 <div class="pillar-info">
                     <strong>Attached Bathrooms</strong>
@@ -1506,7 +1721,7 @@
                     <span>With / without food options</span>
                 </div>
             </div>
-            <div class="pillar-card">
+            <div class="pillar-card pink-accent">
                 <span class="pillar-icon">📍</span>
                 <div class="pillar-info">
                     <strong>Prime Location</strong>
@@ -1522,15 +1737,17 @@
             <div class="section-header">
                 <span class="section-tag">ACTUAL HOSTEL PHOTOS</span>
                 <h2>100% Genuine Property Photos</h2>
-                <p>Clean, spacious, and well-maintained living spaces.</p>
+                <div class="logo-heart-divider">❤</div>
+                <p>Clean, spacious, and well-maintained living spaces. Click any photo to view full size.</p>
             </div>
 
             <div class="photos-grid">
                 <!-- Card 1: Building Exterior -->
-                <div class="photo-card">
+                <div class="photo-card" onclick="openLightbox(0)">
                     <div class="photo-card-img">
                         <span class="photo-tag-pill">BUILDING EXTERIOR</span>
                         <img src="{{ asset('images/building.jpg') }}" alt="SJ Ladies Hostel Front View">
+                        <span class="photo-overlay-btn">🔍 View Photo</span>
                     </div>
                     <div class="photo-card-body">
                         <h3>Hostel Building Exterior</h3>
@@ -1539,22 +1756,24 @@
                 </div>
 
                 <!-- Card 2: Living Lounge -->
-                <div class="photo-card">
+                <div class="photo-card pink-border-card" onclick="openLightbox(1)">
                     <div class="photo-card-img">
-                        <span class="photo-tag-pill" style="background:rgba(212, 91, 115, 0.9);">COMMON LOUNGE</span>
+                        <span class="photo-tag-pill pink-tag">COMMON LOUNGE</span>
                         <img src="{{ asset('images/hall.jpg') }}" alt="SJ Ladies Hostel Living Hall">
+                        <span class="photo-overlay-btn">🔍 View Photo</span>
                     </div>
                     <div class="photo-card-body">
                         <h3>Spacious Hall & Lounge</h3>
-                        <span class="photo-chip" style="background:var(--sj-rose-light);color:var(--sj-rose-dark);border-color:var(--sj-rose-border);">Sofas · Wi-Fi · Laundry</span>
+                        <span class="photo-chip pink-chip">Sofas · Wi-Fi · Laundry</span>
                     </div>
                 </div>
 
                 <!-- Card 3: Modular Kitchen -->
-                <div class="photo-card">
+                <div class="photo-card" onclick="openLightbox(2)">
                     <div class="photo-card-img">
                         <span class="photo-tag-pill">HYGIENIC KITCHEN</span>
                         <img src="{{ asset('images/kitchen.jpg') }}" alt="SJ Ladies Hostel Kitchen">
+                        <span class="photo-overlay-btn">🔍 View Photo</span>
                     </div>
                     <div class="photo-card-body">
                         <h3>Modular Cooking Kitchen</h3>
@@ -1571,6 +1790,7 @@
             <div class="section-header">
                 <span class="section-tag rose-tag">ROOMS & AVAILABILITY</span>
                 <h2>Choose Your Room</h2>
+                <div class="logo-heart-divider">❤</div>
                 <p>Select Ground Floor or First Floor according to your preference.</p>
             </div>
 
@@ -1600,10 +1820,10 @@
                                 $cap = $room->capacity;
                                 $statusClass = $avail === 0 ? 'booked' : ($avail < $cap ? 'occupied' : 'available');
                                 $statusText = $avail === 0 ? 'Fully Booked' : ($avail < $cap ? $avail.' Beds Available' : 'Available');
-                                $tagClass = $room->sharing_label === 'Two Sharing' ? 'tag-rose' : 'tag-pine';
+                                $tagClass = $room->sharing_label === 'Two Sharing' ? 'tag-pink' : 'tag-green';
                                 $isTwoShare = $room->sharing_label === 'Two Sharing';
                             @endphp
-                            <div class="room-card {{ $isTwoShare ? 'rose-card-hover' : '' }}">
+                            <div class="room-card {{ $isTwoShare ? 'pink-hover' : '' }}">
                                 <div class="room-card-head">
                                     <span class="room-title-num">Room {{ $room->number }}</span>
                                     <span class="room-sharing-tag {{ $tagClass }}">{{ $room->sharing_label }}</span>
@@ -1619,7 +1839,7 @@
                                 <div class="room-dual-price">
                                     <div class="dual-price-line">
                                         <span class="d-price-label">🍱 With 3 Meals:</span>
-                                        <span class="d-price-val {{ $isTwoShare ? 'rose-price' : '' }}">₹{{ number_format($room->monthly_rent) }} <small>/mo</small></span>
+                                        <span class="d-price-val {{ $isTwoShare ? 'pink-val' : '' }}">₹{{ number_format($room->monthly_rent) }} <small>/mo</small></span>
                                     </div>
                                     <div class="dual-price-line">
                                         <span class="d-price-label">🏠 Without Food:</span>
@@ -1654,7 +1874,7 @@
                     <div>
                         <h3>First Floor Rooms</h3>
                     </div>
-                    <span class="floor-badge-tag rose-tag">Rooms: B1, B2, B3</span>
+                    <span class="floor-badge-tag pink-tag">Rooms: B1, B2, B3</span>
                 </div>
 
                 <div class="room-grid">
@@ -1665,10 +1885,10 @@
                                 $cap = $room->capacity;
                                 $statusClass = $avail === 0 ? 'booked' : ($avail < $cap ? 'occupied' : 'available');
                                 $statusText = $avail === 0 ? 'Fully Booked' : ($avail < $cap ? $avail.' Beds Available' : 'Available');
-                                $tagClass = $room->sharing_label === 'Two Sharing' ? 'tag-rose' : 'tag-pine';
+                                $tagClass = $room->sharing_label === 'Two Sharing' ? 'tag-pink' : 'tag-green';
                                 $isTwoShare = $room->sharing_label === 'Two Sharing';
                             @endphp
-                            <div class="room-card {{ $isTwoShare ? 'rose-card-hover' : '' }}">
+                            <div class="room-card {{ $isTwoShare ? 'pink-hover' : '' }}">
                                 <div class="room-card-head">
                                     <span class="room-title-num">Room {{ $room->number }}</span>
                                     <span class="room-sharing-tag {{ $tagClass }}">{{ $room->sharing_label }}</span>
@@ -1684,7 +1904,7 @@
                                 <div class="room-dual-price">
                                     <div class="dual-price-line">
                                         <span class="d-price-label">🍱 With 3 Meals:</span>
-                                        <span class="d-price-val {{ $isTwoShare ? 'rose-price' : '' }}">₹{{ number_format($room->monthly_rent) }} <small>/mo</small></span>
+                                        <span class="d-price-val {{ $isTwoShare ? 'pink-val' : '' }}">₹{{ number_format($room->monthly_rent) }} <small>/mo</small></span>
                                     </div>
                                     <div class="dual-price-line">
                                         <span class="d-price-label">🏠 Without Food:</span>
@@ -1721,6 +1941,7 @@
             <div class="section-header">
                 <span class="section-tag">MONTHLY RATES</span>
                 <h2>Clear & Honest Pricing</h2>
+                <div class="logo-heart-divider">❤</div>
                 <p>No hidden charges. Choose with or without meals.</p>
             </div>
 
@@ -1739,7 +1960,7 @@
                         <tr>
                             <td><strong>Six Sharing</strong></td>
                             <td>Room B1 (1st Floor)</td>
-                            <td><span class="table-rate-pine">₹6,500</span></td>
+                            <td><span class="table-rate-green">₹6,500</span></td>
                             <td><span class="table-rate-plain">₹4,200</span></td>
                             <td style="text-align:right;">
                                 <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20want%20to%20enquire%20about%20Six%20Sharing%20(Room%20B1)" target="_blank" class="btn btn-wa btn-sm">
@@ -1750,7 +1971,7 @@
                         <tr>
                             <td><strong>Five Sharing</strong></td>
                             <td>Room A1, Room A2 (Ground Floor)</td>
-                            <td><span class="table-rate-pine">₹6,500</span></td>
+                            <td><span class="table-rate-green">₹6,500</span></td>
                             <td><span class="table-rate-plain">₹4,200</span></td>
                             <td style="text-align:right;">
                                 <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20want%20to%20enquire%20about%20Five%20Sharing%20(Room%20A1%20or%20A2)" target="_blank" class="btn btn-wa btn-sm">
@@ -1761,7 +1982,7 @@
                         <tr>
                             <td><strong>Four Sharing</strong></td>
                             <td>Room B2 (1st Floor)</td>
-                            <td><span class="table-rate-pine">₹6,500</span></td>
+                            <td><span class="table-rate-green">₹6,500</span></td>
                             <td><span class="table-rate-plain">₹4,200</span></td>
                             <td style="text-align:right;">
                                 <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20want%20to%20enquire%20about%20Four%20Sharing%20(Room%20B2)" target="_blank" class="btn btn-wa btn-sm">
@@ -1770,9 +1991,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Two Sharing</strong> <span class="room-sharing-tag tag-rose" style="margin-left:4px;">PREMIUM</span></td>
+                            <td><strong>Two Sharing</strong> <span class="room-sharing-tag tag-pink" style="margin-left:4px;">PREMIUM</span></td>
                             <td>Room A3 (Ground), Room B3 (1st)</td>
-                            <td><span class="table-rate-rose">₹8,600</span></td>
+                            <td><span class="table-rate-pink">₹8,600</span></td>
                             <td><span class="table-rate-plain">₹6,500</span></td>
                             <td style="text-align:right;">
                                 <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20want%20to%20enquire%20about%20Two%20Sharing%20(Room%20A3%20or%20B3)" target="_blank" class="btn btn-wa btn-sm">
@@ -1786,12 +2007,13 @@
         </div>
     </section>
 
-    <!-- Amenities Grid (8 Clean Bento Badges) -->
+    <!-- Amenities Grid (8 Clean Bento Badges Harmonized with Green & Pink) -->
     <section id="amenities" class="amenities-section">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag rose-tag">AMENITIES</span>
                 <h2>Everything You Need</h2>
+                <div class="logo-heart-divider">❤</div>
                 <p>Designed for comfort, security, and hassle-free living.</p>
             </div>
 
@@ -1803,7 +2025,7 @@
                         <span>Fresh South & North Indian</span>
                     </div>
                 </div>
-                <div class="amenity-card-clean rose-tint">
+                <div class="amenity-card-clean pink-card">
                     <div class="amenity-icon-box">🚿</div>
                     <div class="amenity-text">
                         <h4>Attached Bath & Geyser</h4>
@@ -1817,7 +2039,7 @@
                         <span>Seamless study & work</span>
                     </div>
                 </div>
-                <div class="amenity-card-clean rose-tint">
+                <div class="amenity-card-clean pink-card">
                     <div class="amenity-icon-box">🧺</div>
                     <div class="amenity-text">
                         <h4>Washing Machine</h4>
@@ -1831,7 +2053,7 @@
                         <span>Complete safety monitoring</span>
                     </div>
                 </div>
-                <div class="amenity-card-clean rose-tint">
+                <div class="amenity-card-clean pink-card">
                     <div class="amenity-icon-box">🧹</div>
                     <div class="amenity-text">
                         <h4>Daily Housekeeping</h4>
@@ -1845,7 +2067,7 @@
                         <span>Multi-stage filtration</span>
                     </div>
                 </div>
-                <div class="amenity-card-clean rose-tint">
+                <div class="amenity-card-clean pink-card">
                     <div class="amenity-icon-box">🔒</div>
                     <div class="amenity-text">
                         <h4>Lockable Wardrobes</h4>
@@ -1862,6 +2084,7 @@
             <div class="section-header">
                 <span class="section-tag rose-tag">VISIT & BOOK</span>
                 <h2>Location & Direct Enquiry</h2>
+                <div class="logo-heart-divider">❤</div>
                 <p>Reach out on WhatsApp or submit the enquiry form below.</p>
             </div>
 
@@ -1882,8 +2105,8 @@
                             </div>
                         </div>
 
-                        <div class="contact-link-card">
-                            <span class="cl-icon-box" style="color:var(--sj-rose);">📞</span>
+                        <div class="contact-link-card pink-border">
+                            <span class="cl-icon-box" style="color:var(--logo-pink-dark);">📞</span>
                             <div class="cl-details">
                                 <small>Hostel Warden Direct Line</small>
                                 <a href="tel:+918590621496">+91 85906 21496</a>
@@ -1891,7 +2114,7 @@
                         </div>
 
                         <div class="contact-link-card">
-                            <span class="cl-icon-box" style="color:var(--sj-pine);">✉️</span>
+                            <span class="cl-icon-box" style="color:var(--logo-green);">✉️</span>
                             <div class="cl-details">
                                 <small>Official Email</small>
                                 <a href="mailto:sjladieshostel07@gmail.com">sjladieshostel07@gmail.com</a>
@@ -1977,7 +2200,7 @@
                             <textarea id="notes" name="notes" placeholder="Shift timings, college name, or any preferences..."></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-pine btn-block" style="padding:12px;">
+                        <button type="submit" class="btn btn-green btn-block" style="padding:12px;">
                             Send Booking Enquiry →
                         </button>
                     </form>
@@ -1986,7 +2209,7 @@
         </div>
     </section>
 
-    <!-- Clean Modern Footer -->
+    <!-- Clean Modern Footer (Logo Green & Pink Harmony) -->
     <footer class="site-footer">
         <div class="container">
             <div class="footer-cols-grid">
@@ -1994,11 +2217,14 @@
                     <div class="footer-brand-title">
                         <img src="{{ asset('images/logo.jpg') }}" alt="SJ Ladies Hostel Logo">
                         <div>
-                            <strong>SJ Ladies Hostel</strong>
-                            <span>A Safe & Comfortable Stay for Women 🌸</span>
+                            <strong>
+                                <span style="color:#ffffff;">S</span><span style="color:#ffd2da;">J</span>
+                                LADIES HOSTEL
+                            </strong>
+                            <span>A Safe & Comfortable Stay for Women ❤</span>
                         </div>
                     </div>
-                    <p style="color:#8ca395;line-height:1.6;font-size:12.5px;max-width:320px;">
+                    <p style="color:#a4bea9;line-height:1.6;font-size:12.5px;max-width:320px;">
                         Safe, clean, and peaceful living spaces for students and working women across Ground and First Floors.
                     </p>
                 </div>
@@ -2018,9 +2244,9 @@
                     <h4>Contact Desk</h4>
                     <ul class="footer-links-ul">
                         <li>Phone: <a href="tel:+918590621496">+91 85906 21496</a></li>
-                        <li>WhatsApp: <a href="https://wa.me/918590621496" target="_blank" style="color:#bbf7d0;">8590621496</a></li>
+                        <li>WhatsApp: <a href="https://wa.me/918590621496" target="_blank" style="color:#ffd2da;">8590621496</a></li>
                         <li>Email: <a href="mailto:sjladieshostel07@gmail.com">sjladieshostel07@gmail.com</a></li>
-                        <li style="color:#8ca395;margin-top:2px;">Visiting: 8:00 AM – 8:00 PM</li>
+                        <li style="color:#a4bea9;margin-top:2px;">Visiting: 8:00 AM – 8:00 PM</li>
                     </ul>
                 </div>
             </div>
@@ -2040,7 +2266,7 @@
 
     <!-- Mobile Sticky Quick Bar -->
     <div class="mobile-quick-actions">
-        <a href="tel:+918590621496" class="btn btn-rose-outline" style="flex:1;">
+        <a href="tel:+918590621496" class="btn btn-pink-outline" style="flex:1;">
             📞 Call
         </a>
         <a href="https://wa.me/918590621496?text=Hi%20SJ%20Ladies%20Hostel%2C%20I%20would%20like%20to%20enquire%20about%20room%20availability" target="_blank" class="btn btn-wa" style="flex:1;">
@@ -2048,8 +2274,104 @@
         </a>
     </div>
 
-    <!-- Clean Floor Switcher Script -->
+    <!-- Lightbox Modal for Real Photos -->
+    <div id="photoLightbox" class="lightbox-modal" onclick="handleLightboxBackdrop(event)">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close-btn" onclick="closeLightbox()" title="Close (Esc)">✕</button>
+            <button class="lightbox-nav-btn lightbox-prev" onclick="prevLightbox(event)" title="Previous (Left arrow)">‹</button>
+            <button class="lightbox-nav-btn lightbox-next" onclick="nextLightbox(event)" title="Next (Right arrow)">›</button>
+            <div class="lightbox-img-wrap">
+                <img id="lightboxImg" src="" alt="Hostel Photo">
+            </div>
+            <div class="lightbox-caption">
+                <div>
+                    <h4 id="lightboxTitle">Photo Title</h4>
+                    <p id="lightboxSubtitle">Photo Description</p>
+                </div>
+                <span id="lightboxIndexBadge" class="photo-chip">1 / 3</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Scripts -->
     <script>
+        // Real Photo Gallery Lightbox
+        const hostelPhotos = [
+            {
+                src: "{{ asset('images/building.jpg') }}",
+                title: "SJ Ladies Hostel Building Exterior",
+                subtitle: "Safe, independent multi-storey hostel building with Ground & First Floor rooms and 24/7 CCTV."
+            },
+            {
+                src: "{{ asset('images/hall.jpg') }}",
+                title: "Spacious Living Hall & Common Area",
+                subtitle: "Clean, well-ventilated living space with comfortable seating, high-speed Wi-Fi & washing machine."
+            },
+            {
+                src: "{{ asset('images/kitchen.jpg') }}",
+                title: "Hygienic Modular Kitchen",
+                subtitle: "Modern cooking facility ensuring fresh, nutritious breakfast, lunch, and dinner daily."
+            }
+        ];
+
+        let currentPhotoIdx = 0;
+
+        function openLightbox(index) {
+            currentPhotoIdx = (index + hostelPhotos.length) % hostelPhotos.length;
+            updateLightboxContent();
+            const lb = document.getElementById('photoLightbox');
+            lb.style.display = 'flex';
+            requestAnimationFrame(() => lb.classList.add('active'));
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById('photoLightbox');
+            lb.classList.remove('active');
+            setTimeout(() => {
+                lb.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 200);
+        }
+
+        function handleLightboxBackdrop(e) {
+            if (e.target.id === 'photoLightbox') {
+                closeLightbox();
+            }
+        }
+
+        function prevLightbox(e) {
+            if (e) e.stopPropagation();
+            currentPhotoIdx = (currentPhotoIdx - 1 + hostelPhotos.length) % hostelPhotos.length;
+            updateLightboxContent();
+        }
+
+        function nextLightbox(e) {
+            if (e) e.stopPropagation();
+            currentPhotoIdx = (currentPhotoIdx + 1) % hostelPhotos.length;
+            updateLightboxContent();
+        }
+
+        function updateLightboxContent() {
+            const p = hostelPhotos[currentPhotoIdx];
+            const img = document.getElementById('lightboxImg');
+            img.src = p.src;
+            img.alt = p.title;
+            document.getElementById('lightboxTitle').textContent = p.title;
+            document.getElementById('lightboxSubtitle').textContent = p.subtitle;
+            document.getElementById('lightboxIndexBadge').textContent = (currentPhotoIdx + 1) + ' / ' + hostelPhotos.length;
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const lb = document.getElementById('photoLightbox');
+            if (lb && lb.classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                else if (e.key === 'ArrowLeft') prevLightbox();
+                else if (e.key === 'ArrowRight') nextLightbox();
+            }
+        });
+
+        // Floor Switcher
         function switchFloor(type, btn) {
             document.querySelectorAll('.filter-pill-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -2069,6 +2391,7 @@
             }
         }
 
+        // Room Selection Quick Jump
         function selectRoom(roomNum, sharing) {
             const sel = document.getElementById('room_number');
             if (sel) sel.value = roomNum;

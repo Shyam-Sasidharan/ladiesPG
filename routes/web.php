@@ -54,6 +54,7 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/generate', [BillingController::class, 'generate'])->name('billing.generate');
     Route::post('/payments', [BillingController::class, 'pay'])->name('payments.store');
+    Route::put('/rent/{record}', [BillingController::class, 'updateRecord'])->name('rent.records.update');
     Route::put('/rent/{record}/late-fee', [BillingController::class, 'lateFee'])->name('rent.late-fee');
     Route::get('/accounting', [AccountingController::class, 'summary'])->name('accounting.summary');
     Route::get('/accounting/transactions/create', [AccountingController::class, 'create'])->name('accounting.transactions.create');

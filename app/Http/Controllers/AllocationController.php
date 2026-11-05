@@ -25,7 +25,27 @@ class AllocationController extends Controller
         $bed->load(['room.floor', 'activeAllocation.resident.rentRecords.payments', 'activeAllocation.allocation']);
         $active = $bed->activeAllocation;
 
-        return response()->json(['id' => $bed->id, 'name' => $bed->name, 'status' => $bed->effective_status, 'room' => $bed->room->number, 'floor' => $bed->room->floor->name, 'rent' => $bed->room->monthly_rent, 'deposit' => $bed->room->security_deposit, 'resident' => $active ? ['name' => $active->resident->full_name, 'mobile' => $active->resident->mobile, 'joined' => $active->allocation->check_in, 'checkout' => $active->resident->expected_checkout?->format('d M Y'), 'rent' => $active->allocation->rent, 'pending' => $active->resident->rentRecords->sum('pending'), 'url' => route('residents.show', $active->resident), 'photo' => $active->resident->photo ? route('residents.photo', $active->resident) : null] : null]);
+        return response()->json([
+            'id' => $bed->id,
+            'name' => $bed->name,
+            'tier' => $bed->tier,
+            'display_name' => $bed->display_name,
+            'status' => $bed->effective_status,
+            'room' => $bed->room->number,
+            'floor' => $bed->room->floor->name,
+            'rent' => $bed->room->monthly_rent,
+            'deposit' => $bed->room->security_deposit,
+            'resident' => $active ? [
+                'name' => $active->resident->full_name,
+                'mobile' => $active->resident->mobile,
+                'joined' => $active->allocation->check_in,
+                'checkout' => $active->resident->expected_checkout?->format('d M Y'),
+                'rent' => $active->allocation->rent,
+                'pending' => $active->resident->rentRecords->sum('pending'),
+                'url' => route('residents.show', $active->resident),
+                'photo' => $active->resident->photo ? route('residents.photo', $active->resident) : null,
+            ] : null,
+        ]);
     }
 
     public function store(AllocationRequest $r, AllocationService $service)

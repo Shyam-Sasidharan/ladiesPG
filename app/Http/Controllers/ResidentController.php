@@ -67,14 +67,41 @@ class ResidentController extends Controller
         $data = $r->safe()->except('photo');
         if ($resident->status === 'checked_out') {
             unset($data['status']);
-        } if ($r->hasFile('photo')) {
+        }
+        if ($r->hasFile('photo')) {
             $data['photo'] = $r->file('photo')->store('photos', 'local');
             if ($resident->photo) {
                 Storage::disk('local')->delete($resident->photo);
             }
-        } $resident->update($data + ['updated_by' => auth()->id()]);
+        }
 
-        return redirect()->route('residents.show', $resident)->with('success', 'Resident updated.');
+        DB::transaction(function () use ($resident, $data) {
+            $resident->update($data + ['updated_by' => auth()->id()]);
+
+            // Synchronize current active allocation rent and deposit
+            if ($activeAllocation = $resident->activeAllocation) {
+                $activeAllocation->allocation->update([
+                    'rent' => $resident->monthly_rent,
+                    'deposit' => $resident->security_deposit,
+                ]);
+            }
+
+            // Synchronize open / unpaid monthly rent invoices for current & future months
+            $currentMonth = today()->startOfMonth()->toDateString();
+            $openRecords = $resident->rentRecords()
+                ->where('month', '>=', $currentMonth)
+                ->with('payments')
+                ->get();
+
+            foreach ($openRecords as $record) {
+                $paid = $record->payments->sum('amount');
+                if ($paid <= (float) $resident->monthly_rent) {
+                    $record->update(['amount' => $resident->monthly_rent]);
+                }
+            }
+        });
+
+        return redirect()->route('residents.show', $resident)->with('success', 'Resident details and active rent updated successfully.');
     }
 
     public function destroy(Resident $resident)

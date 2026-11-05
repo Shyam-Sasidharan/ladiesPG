@@ -61,4 +61,23 @@ class BillingController extends Controller
 
         return back()->with('success', 'Late fee updated.');
     }
+
+    public function updateRecord(Request $r, RentRecord $record)
+    {
+        $data = $r->validate([
+            'amount' => 'required|numeric|min:0|max:9999999',
+            'due_date' => 'nullable|date',
+        ]);
+        DB::transaction(function () use ($record, $data) {
+            Resident::withTrashed()->whereKey($record->resident_id)->lockForUpdate()->firstOrFail();
+            $record = RentRecord::with('payments')->lockForUpdate()->findOrFail($record->id);
+            $paid = $record->payments->sum('amount');
+            if ($paid > $data['amount'] + $record->late_fee) {
+                throw ValidationException::withMessages(['amount' => 'The invoice amount cannot be lower than payments already received (₹'.number_format($paid, 2).').']);
+            }
+            $record->update(array_filter($data));
+        }, 5);
+
+        return back()->with('success', 'Rent invoice updated.');
+    }
 }

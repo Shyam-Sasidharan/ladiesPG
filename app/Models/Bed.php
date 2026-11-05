@@ -25,6 +25,19 @@ class Bed extends Model
 
     public function getEffectiveStatusAttribute()
     {
-        return $this->activeAllocation ? 'occupied' : ($this->room->status !== 'active' || $this->room->trashed() ? 'maintenance' : $this->status);
+        if ($this->activeAllocation) {
+            return 'occupied';
+        }
+
+        if ($this->status === 'archived') {
+            return 'archived';
+        }
+
+        return ($this->room->status !== 'active' || $this->room->trashed()) ? 'maintenance' : $this->status;
+    }
+
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->tier ? "{$this->name} ({$this->tier})" : $this->name;
     }
 }

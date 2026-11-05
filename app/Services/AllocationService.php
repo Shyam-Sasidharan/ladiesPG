@@ -45,7 +45,11 @@ class AllocationService
                 if ($lastCheckout && $data['date'] < $lastCheckout) {
                     $this->fail('Check-in cannot precede the end of a previous stay.');
                 }
-                $allocation = Allocation::create(['resident_id' => $residentId, 'bed_id' => $bedId, 'check_in' => $data['date'], 'rent' => $bed->room->monthly_rent, 'deposit' => $bed->room->security_deposit, 'notes' => $data['notes'] ?? null, 'created_by' => auth()->id()]);
+                $rent = (! $resident->food_required && $bed->room->rent_without_food)
+                    ? $bed->room->rent_without_food
+                    : ($resident->monthly_rent > 0 ? $resident->monthly_rent : $bed->room->monthly_rent);
+
+                $allocation = Allocation::create(['resident_id' => $residentId, 'bed_id' => $bedId, 'check_in' => $data['date'], 'rent' => $rent, 'deposit' => $bed->room->security_deposit, 'notes' => $data['notes'] ?? null, 'created_by' => auth()->id()]);
                 ActiveAllocation::create(['resident_id' => $residentId, 'bed_id' => $bedId, 'allocation_id' => $allocation->id]);
                 $resident->update(['status' => 'active', 'monthly_rent' => $allocation->rent, 'security_deposit' => $allocation->deposit, 'joining_date' => $data['date'], 'expected_checkout' => $resident->status === 'checked_out' ? null : $resident->expected_checkout, 'updated_by' => auth()->id()]);
                 if (($data['initial_payment'] ?? 0) > 0) {

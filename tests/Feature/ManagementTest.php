@@ -329,15 +329,57 @@ class ManagementTest extends TestCase
         $this->assertStringStartsWith('PK', $response->streamedContent());
     }
 
-    public function test_room_capacity_creates_beds_and_cannot_shrink_history(): void
+    public function test_room_capacity_dynamically_adjusts_and_validates_conflicts(): void
     {
         $floor = Floor::create(['name' => 'Ground', 'number' => 0]);
         $data = ['floor_id' => $floor->id, 'number' => '101', 'type' => 'Sharing', 'capacity' => 5, 'monthly_rent' => 5000, 'security_deposit' => 10000, 'status' => 'active'];
         $this->post('/rooms', $data)->assertSessionHasNoErrors();
-        $this->assertDatabaseCount('beds', 5);
-        $room = Room::first();
+
+        $room = Room::where('number', '101')->first();
+        $this->assertEquals(5, $room->capacity);
+        $this->assertCount(5, $room->beds);
+
+        // Dynamically shrink capacity from 5 to 3 when unoccupied
         $data['capacity'] = 3;
+        $data['effective_date'] = '2026-11-01';
+        $this->put('/rooms/'.$room->id, $data)->assertSessionHasNoErrors();
+        $room->refresh();
+        $this->assertEquals(3, $room->capacity);
+        $this->assertCount(3, $room->beds);
+        $this->assertTrue($room->capacityHistories()->where('capacity', 3)->exists());
+
+        // Allocate all 3 beds
+        foreach ($room->beds as $bed) {
+            $resident = Resident::create([
+                'full_name' => 'Res '.$bed->id,
+                'mobile' => '900000000'.$bed->id,
+                'joining_date' => '2026-11-01',
+                'status' => 'active',
+            ]);
+            $alloc = Allocation::create([
+                'resident_id' => $resident->id,
+                'bed_id' => $bed->id,
+                'check_in' => '2026-11-01',
+                'rent' => 5000,
+                'deposit' => 1000,
+            ]);
+            ActiveAllocation::create([
+                'resident_id' => $resident->id,
+                'bed_id' => $bed->id,
+                'allocation_id' => $alloc->id,
+            ]);
+        }
+
+        // Attempting to shrink capacity below active occupancy (3) should fail with validation error
+        $data['capacity'] = 2;
         $this->put('/rooms/'.$room->id, $data)->assertSessionHasErrors('capacity');
-        $this->assertEquals(5, $room->fresh()->capacity);
+        $this->assertEquals(3, $room->fresh()->capacity);
+
+        // Expanding capacity to 6 should add beds dynamically
+        $data['capacity'] = 6;
+        $this->put('/rooms/'.$room->id, $data)->assertSessionHasNoErrors();
+        $room->refresh();
+        $this->assertEquals(6, $room->capacity);
+        $this->assertCount(6, $room->beds);
     }
 }
