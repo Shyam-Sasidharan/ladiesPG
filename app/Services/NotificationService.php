@@ -19,7 +19,7 @@ class NotificationService
                         'rent-reminder-1day-'.$r->id.'-'.$r->due_date->toDateString(),
                         'reminder',
                         'Rent Due Tomorrow: '.$r->resident->full_name,
-                        'Advance Reminder: Monthly rent of INR '.number_format($r->pending, 2).' for '.$r->month->format('F Y').' is due tomorrow ('.$r->due_date->format('d M Y').'). Resident: '.$r->resident->full_name.' ('.$r->resident->mobile.')',
+                        'Advance Reminder: Monthly rent of INR '.number_format($r->pending, 2).' for '.$r->month->format('F Y').' is due tomorrow ('.$r->due_date->format('d M Y').'). Resident: '.$r->resident->full_name.($r->resident->mobile ? ' ('.$r->resident->mobile.')' : ''),
                         route('billing.index', ['q' => $r->resident->full_name])
                     );
                 }
@@ -34,7 +34,7 @@ class NotificationService
                         'rent-due-today-'.$r->id.'-'.$r->due_date->toDateString(),
                         'warning',
                         'Rent Due Today: '.$r->resident->full_name,
-                        'Monthly rent of INR '.number_format($r->pending, 2).' for '.$r->month->format('F Y').' is due today ('.$r->due_date->format('d M Y').'). Resident: '.$r->resident->full_name.' ('.$r->resident->mobile.')',
+                        'Monthly rent of INR '.number_format($r->pending, 2).' for '.$r->month->format('F Y').' is due today ('.$r->due_date->format('d M Y').'). Resident: '.$r->resident->full_name.($r->resident->mobile ? ' ('.$r->resident->mobile.')' : ''),
                         route('billing.index', ['q' => $r->resident->full_name])
                     );
                 }

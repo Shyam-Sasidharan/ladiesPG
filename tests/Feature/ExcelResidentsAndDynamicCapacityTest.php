@@ -120,6 +120,64 @@ class ExcelResidentsAndDynamicCapacityTest extends TestCase
         $this->assertEquals('active', $dharmaja->status);
         $this->assertEquals('B2', $dharmaja->activeAllocation->bed->name);
         $this->assertEquals('DOWN', $dharmaja->activeAllocation->bed->tier);
+
+        // Verify First Floor Room 1 (B1 - 6 Share)
+        $b1 = Room::where('number', 'B1')->first();
+        $this->assertNotNull($b1);
+        $this->assertEquals(6, $b1->capacity);
+        $this->assertEquals(4, $b1->occupied);
+        $this->assertEquals(2, $b1->available);
+
+        $amritha = Resident::where('mobile', '9207124537')->first();
+        $this->assertNotNull($amritha);
+        $this->assertEquals('AMRITHA ARUN KUMAR', $amritha->full_name);
+        $this->assertEquals('active', $amritha->status);
+        $this->assertEquals('TOP', $amritha->activeAllocation->bed->tier);
+
+        $grace = Resident::where('mobile', '8281138051')->first();
+        $this->assertNotNull($grace);
+        $this->assertEquals('GRACE', $grace->full_name);
+        $this->assertEquals('active', $grace->status);
+        $this->assertEquals('TOP', $grace->activeAllocation->bed->tier);
+
+        $aksa = Resident::where('full_name', 'AKSA SEBASTIAN')->first();
+        $this->assertNotNull($aksa);
+        $this->assertEquals('active', $aksa->status);
+        $this->assertEquals('TOP', $aksa->activeAllocation->bed->tier);
+
+        $alphina = Resident::where('full_name', 'ALPHINA')->first();
+        $this->assertNotNull($alphina);
+        $this->assertEquals('active', $alphina->status);
+        $this->assertEquals('DOWN', $alphina->activeAllocation->bed->tier);
+
+        // Verify First Floor Room 2 (B2 - 4 Share)
+        $b2 = Room::where('number', 'B2')->first();
+        $this->assertNotNull($b2);
+        $this->assertEquals(4, $b2->capacity);
+        $this->assertEquals(4, $b2->occupied);
+        $this->assertEquals(0, $b2->available);
+
+        $vinitha = Resident::where('mobile', '9207472123')->first();
+        $this->assertNotNull($vinitha);
+        $this->assertEquals('VINITHA', $vinitha->full_name);
+        $this->assertEquals('active', $vinitha->status);
+        $this->assertEquals('DOWN', $vinitha->activeAllocation->bed->tier);
+
+        $aleena = Resident::where('mobile', '9961241964')->first();
+        $this->assertNotNull($aleena);
+        $this->assertEquals('ALEENA', $aleena->full_name);
+        $this->assertEquals('active', $aleena->status);
+        $this->assertEquals('DOWN', $aleena->activeAllocation->bed->tier);
+
+        $raksha = Resident::where('full_name', 'RAKSHA')->first();
+        $this->assertNotNull($raksha);
+        $this->assertEquals('active', $raksha->status);
+        $this->assertEquals('TOP', $raksha->activeAllocation->bed->tier);
+
+        $sana = Resident::where('full_name', 'SANA')->first();
+        $this->assertNotNull($sana);
+        $this->assertEquals('active', $sana->status);
+        $this->assertEquals('TOP', $sana->activeAllocation->bed->tier);
     }
 
     public function test_dynamic_room_sharing_configuration_via_controller(): void

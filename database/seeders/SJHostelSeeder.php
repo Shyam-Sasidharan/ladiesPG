@@ -450,21 +450,129 @@ class SJHostelSeeder extends Seeder
                     'check_out' => '2026-11-01',
                     'checkout_reason' => 'Vacated on 01/11/2026 during room reconfiguration',
                 ],
+
+                // First Floor - Room B1 (1 ST FLOOR 6SHARE)
+                [
+                    'full_name' => 'AMRITHA ARUN KUMAR',
+                    'mobile' => '9207124537',
+                    'joining_date' => '2026-10-10',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B1',
+                    'bed_name' => 'B4',
+                    'bed_tier' => 'TOP',
+                    'check_in' => '2026-10-10',
+                    'check_out' => null,
+                ],
+                [
+                    'full_name' => 'GRACE',
+                    'mobile' => '8281138051',
+                    'joining_date' => '2026-10-31',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B1',
+                    'bed_name' => 'B5',
+                    'bed_tier' => 'TOP',
+                    'check_in' => '2026-10-31',
+                    'check_out' => null,
+                ],
+                [
+                    'full_name' => 'AKSA SEBASTIAN',
+                    'mobile' => null,
+                    'joining_date' => '2026-10-31',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B1',
+                    'bed_name' => 'B6',
+                    'bed_tier' => 'TOP',
+                    'check_in' => '2026-10-31',
+                    'check_out' => null,
+                ],
+                [
+                    'full_name' => 'ALPHINA',
+                    'mobile' => null,
+                    'joining_date' => '2026-10-31',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B1',
+                    'bed_name' => 'B1',
+                    'bed_tier' => 'DOWN',
+                    'check_in' => '2026-10-31',
+                    'check_out' => null,
+                ],
+
+                // First Floor - Room B2 (1ST FLOOR 4 SHARE)
+                [
+                    'full_name' => 'VINITHA',
+                    'mobile' => '9207472123',
+                    'joining_date' => '2026-11-02',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B2',
+                    'bed_name' => 'B1',
+                    'bed_tier' => 'DOWN',
+                    'check_in' => '2026-11-02',
+                    'check_out' => null,
+                ],
+                [
+                    'full_name' => 'ALEENA',
+                    'mobile' => '9961241964',
+                    'joining_date' => '2026-11-02',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B2',
+                    'bed_name' => 'B2',
+                    'bed_tier' => 'DOWN',
+                    'check_in' => '2026-11-02',
+                    'check_out' => null,
+                ],
+                [
+                    'full_name' => 'RAKSHA',
+                    'mobile' => null,
+                    'joining_date' => '2026-11-02',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B2',
+                    'bed_name' => 'B3',
+                    'bed_tier' => 'TOP',
+                    'check_in' => '2026-11-02',
+                    'check_out' => null,
+                ],
+                [
+                    'full_name' => 'SANA',
+                    'mobile' => null,
+                    'joining_date' => '2026-11-02',
+                    'expected_checkout' => null,
+                    'status' => 'active',
+                    'food_required' => true,
+                    'room_number' => 'B2',
+                    'bed_name' => 'B4',
+                    'bed_tier' => 'TOP',
+                    'check_in' => '2026-11-02',
+                    'check_out' => null,
+                ],
             ];
 
             // Clear existing active allocations for these specific residents first to prevent unique constraint collisions during bed realignment
-            $allResidentMobiles = array_column($residentsData, 'mobile');
+            $allResidentMobiles = array_filter(array_column($residentsData, 'mobile'));
             $allResidentNames = array_column($residentsData, 'full_name');
-            $existingResIds = Resident::whereIn('mobile', $allResidentMobiles)
-                ->orWhereIn('full_name', $allResidentNames)
+            $existingResIds = Resident::whereIn('full_name', $allResidentNames)
+                ->when(! empty($allResidentMobiles), fn ($q) => $q->orWhereIn('mobile', $allResidentMobiles))
                 ->pluck('id');
 
             ActiveAllocation::whereIn('resident_id', $existingResIds)->delete();
 
             foreach ($residentsData as $resItem) {
                 // Find or create resident
-                $resident = Resident::where('mobile', $resItem['mobile'])
-                    ->orWhere('full_name', $resItem['full_name'])
+                $resident = Resident::where('full_name', $resItem['full_name'])
+                    ->when(! empty($resItem['mobile']), fn ($q) => $q->orWhere('mobile', $resItem['mobile']))
                     ->first();
 
                 if (! $resident) {
