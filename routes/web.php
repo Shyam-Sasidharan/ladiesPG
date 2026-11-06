@@ -12,6 +12,7 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResidentController;
+use App\Http\Controllers\WebsiteContentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -71,4 +72,31 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
+    // Website CMS & Content Management
+    Route::prefix('website-content')->name('website.content.')->group(function () {
+        Route::get('/', [WebsiteContentController::class, 'index'])->name('index');
+        Route::post('/general', [WebsiteContentController::class, 'updateGeneral'])->name('general');
+        Route::post('/hero', [WebsiteContentController::class, 'updateHero'])->name('hero');
+
+        Route::post('/rooms', [WebsiteContentController::class, 'storeRoom'])->name('rooms.store');
+        Route::put('/rooms/{room}', [WebsiteContentController::class, 'updateRoom'])->name('rooms.update');
+        Route::delete('/rooms/{room}', [WebsiteContentController::class, 'destroyRoom'])->name('rooms.destroy');
+
+        Route::post('/facilities', [WebsiteContentController::class, 'storeFacility'])->name('facilities.store');
+        Route::put('/facilities/{facility}', [WebsiteContentController::class, 'updateFacility'])->name('facilities.update');
+        Route::delete('/facilities/{facility}', [WebsiteContentController::class, 'destroyFacility'])->name('facilities.destroy');
+
+        Route::post('/gallery', [WebsiteContentController::class, 'storeGallery'])->name('gallery.store');
+        Route::put('/gallery/{image}', [WebsiteContentController::class, 'updateGallery'])->name('gallery.update');
+        Route::delete('/gallery/{image}', [WebsiteContentController::class, 'destroyGallery'])->name('gallery.destroy');
+
+        Route::post('/testimonials', [WebsiteContentController::class, 'storeTestimonial'])->name('testimonials.store');
+        Route::put('/testimonials/{testimonial}', [WebsiteContentController::class, 'updateTestimonial'])->name('testimonials.update');
+        Route::delete('/testimonials/{testimonial}', [WebsiteContentController::class, 'destroyTestimonial'])->name('testimonials.destroy');
+
+        Route::post('/updates', [WebsiteContentController::class, 'storeUpdate'])->name('updates.store');
+        Route::put('/updates/{update}', [WebsiteContentController::class, 'updateUpdate'])->name('updates.update');
+        Route::delete('/updates/{update}', [WebsiteContentController::class, 'destroyUpdate'])->name('updates.destroy');
+    });
 });

@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Facility;
 use App\Models\Floor;
+use App\Models\GalleryImage;
+use App\Models\HostelUpdate;
 use App\Models\PgNotification;
 use App\Models\PgSetting;
 use App\Models\Room;
+use App\Models\Testimonial;
+use App\Models\WebsiteRoomShowcase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -94,7 +99,46 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('welcome', compact('settings', 'floors', 'groundFloor', 'firstFloor', 'totalBeds', 'availableBeds', 'occupiedBeds', 'pricingTiers'));
+        $websiteRooms = collect();
+        $facilities = collect();
+        $gallery = collect();
+        $testimonials = collect();
+        $updates = collect();
+
+        try {
+            if (Schema::hasTable('website_room_showcases')) {
+                $websiteRooms = WebsiteRoomShowcase::where('is_active', true)->orderBy('sort_order')->get();
+            }
+            if (Schema::hasTable('facilities')) {
+                $facilities = Facility::where('is_active', true)->orderBy('sort_order')->get();
+            }
+            if (Schema::hasTable('gallery_images')) {
+                $gallery = GalleryImage::where('is_active', true)->orderBy('sort_order')->get();
+            }
+            if (Schema::hasTable('testimonials')) {
+                $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order')->get();
+            }
+            if (Schema::hasTable('hostel_updates')) {
+                $updates = HostelUpdate::where('is_active', true)->orderBy('sort_order')->get();
+            }
+        } catch (\Throwable) {
+        }
+
+        return view('welcome', compact(
+            'settings',
+            'floors',
+            'groundFloor',
+            'firstFloor',
+            'totalBeds',
+            'availableBeds',
+            'occupiedBeds',
+            'pricingTiers',
+            'websiteRooms',
+            'facilities',
+            'gallery',
+            'testimonials',
+            'updates'
+        ));
     }
 
     public function enquiry(Request $request)

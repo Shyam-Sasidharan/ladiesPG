@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SJ Ladies Hostel · Premium, Safe & Homely Women's PG in Kochi</title>
-    <meta name="description" content="SJ Ladies Hostel offers safe, comfortable, and homely accommodation for working women and female students in Kochi. Attached bathrooms in all rooms, 3 fresh home-cooked meals, Wi-Fi, and 24/7 security.">
-    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    <title>{{ $settings->name ?? 'SJ Ladies Hostel' }} · Premium, Safe & Homely Women's PG in Kochi</title>
+    <meta name="description" content="{{ $settings->notes ?? 'SJ Ladies Hostel offers safe, comfortable, and homely accommodation for working women and female students in Kochi. Attached bathrooms in all rooms, 3 fresh home-cooked meals, Wi-Fi, and 24/7 security.' }}">
+    <link rel="icon" type="image/jpeg" href="{{ $settings->logo_path ? asset('storage/'.$settings->logo_path) : asset('images/logo.jpg') }}">
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,11 +21,6 @@
             --hostel-navy: #0b2545;         /* Hosteller Deep Navy Banner & Footer */
             --hostel-navy-dark: #07192f;
             --hostel-navy-light: #133a68;
-
-            /* Brand Logo Accents (SJ Ladies Hostel Identity) */
-            --logo-green: #1a4028;
-            --logo-pink: #de7b85;
-            --logo-pink-dark: #c45865;
 
             /* Neutral canvas & surfaces */
             --bg-body: #f8fafc;
@@ -44,8 +39,6 @@
             --star-gold: #f59e0b;
             --wa-green: #25d366;
             --wa-green-dark: #1ea952;
-            --tag-green: #10b981;
-            --tag-green-light: #ecfdf5;
 
             /* Radii & Shadows */
             --radius-sm: 8px;
@@ -284,7 +277,7 @@
             color: var(--text-heading);
         }
 
-        /* HERO & FEATURED ROOMS (EXACT 3-CARD CAROUSEL / GRID IN VIDEO 00:00) */
+        /* HERO & FEATURED ROOMS (3-CARD GRID IN VIDEO) */
         .hero-section {
             padding: 48px 0 36px;
         }
@@ -321,7 +314,6 @@
             margin: 0 auto;
         }
 
-        /* 3-CARD GRID: CARD 1 (6-BED), CARD 2 (2-BED), CARD 3 (STAY LONGER SAVE MORE DEEP BLUE) */
         .featured-cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -496,7 +488,7 @@
             margin-top: 2px;
         }
 
-        /* SECTION: "WE HAVE EVERYTHING YOU NEED" (VIDEO 00:02) */
+        /* SECTION: "WE HAVE EVERYTHING YOU NEED" */
         .everything-section {
             padding: 80px 0;
             background: #ffffff;
@@ -625,7 +617,7 @@
             color: var(--text-muted);
         }
 
-        /* SECTION: 4-COLUMN RATINGS & TRUST STRIP (VIDEO 00:05) */
+        /* SECTION: 4-COLUMN RATINGS & TRUST STRIP */
         .ratings-strip-section {
             padding: 38px 0;
             background: #ffffff;
@@ -672,7 +664,7 @@
             gap: 6px;
         }
 
-        /* SECTION: "WHAT OUR GUESTS SAY" TESTIMONIALS (VIDEO 00:06) */
+        /* SECTION: "WHAT OUR GUESTS SAY" TESTIMONIALS */
         .testimonials-section {
             padding: 80px 0;
             background: var(--bg-body);
@@ -790,7 +782,7 @@
             border-color: var(--hostel-blue);
         }
 
-        /* SECTION: "FIND SUITABLE BUDGET ACCOMMODATION" (VIDEO 00:09) */
+        /* SECTION: "FIND SUITABLE BUDGET ACCOMMODATION" */
         .budget-accom-section {
             padding: 80px 0;
             background: #ffffff;
@@ -880,7 +872,7 @@
             margin-bottom: 4px;
         }
 
-        /* SECTION: "PHOTOS OF OUR ROOMS" BENTO GALLERY (VIDEO 00:13) */
+        /* SECTION: "PHOTOS OF OUR ROOMS" BENTO GALLERY */
         .gallery-section {
             padding: 80px 0;
             background: var(--bg-body);
@@ -956,7 +948,7 @@
             font-weight: 600;
         }
 
-        /* SECTION: "HOSTELLER NEWS" / HOSTEL LIFE (VIDEO 00:16) */
+        /* SECTION: "HOSTELLER NEWS" / HOSTEL LIFE */
         .news-section {
             padding: 80px 0;
             background: #ffffff;
@@ -1051,7 +1043,7 @@
             border-top: 1px solid var(--border-light);
         }
 
-        /* SECTION: "CONTACTS" & LOCATION (VIDEO 00:20) */
+        /* SECTION: "CONTACTS" & LOCATION */
         .contacts-section {
             padding: 80px 0;
             background: var(--bg-body);
@@ -1129,7 +1121,7 @@
             border: none;
         }
 
-        /* FOOTER (EXACT DEEP NAVY MODEL IN VIDEO 00:21) */
+        /* FOOTER */
         .site-footer {
             background-color: var(--hostel-navy);
             color: #cbd5e1;
@@ -1406,14 +1398,19 @@
 </head>
 <body>
 
-    <!-- STICKY SITE HEADER (HOSTELLER NAVBAR MODEL) -->
+    <!-- STICKY SITE HEADER -->
     <header class="site-header">
         <div class="container header-inner">
             <a href="{{ route('home') }}" class="brand-link">
-                <img src="{{ asset('images/logo.jpg') }}" alt="SJ Ladies Hostel" class="brand-logo-img">
+                <img src="{{ $settings->logo_path ? asset('storage/'.$settings->logo_path) : asset('images/logo.jpg') }}" alt="{{ $settings->name ?? 'SJ Ladies Hostel' }}" class="brand-logo-img">
                 <div class="brand-text">
-                    <span class="brand-name">SJ <span>Ladies Hostel</span></span>
-                    <span class="brand-sub">Safe & Homely Stay · Kochi</span>
+                    <span class="brand-name">
+                        @php
+                            $nameParts = explode(' ', $settings->name ?? 'SJ Ladies Hostel', 2);
+                        @endphp
+                        {{ $nameParts[0] }} <span>{{ $nameParts[1] ?? '' }}</span>
+                    </span>
+                    <span class="brand-sub">{{ $settings->tagline ?? 'Safe & Homely Stay · Kochi' }}</span>
                 </div>
             </a>
 
@@ -1437,84 +1434,105 @@
         </div>
     </header>
 
-    <!-- HERO & ROOM CARDS SECTION (EXACT HOSTELLER 3-CARD CAROUSEL MODEL) -->
+    <!-- HERO & ROOM CARDS SECTION -->
     <section class="hero-section" id="home">
         <div class="container">
             <div class="hero-heading-wrap">
-                <span class="hero-badge">✦ Welcome to Your New Home</span>
-                <h1 class="hero-title">Experience Safe, Clean & Homely Living</h1>
-                <p class="hero-subtitle">Exclusively designed for female students and working professionals in Kochi. Attached bathrooms in all rooms, 3 fresh daily meals, and 24/7 security.</p>
+                <span class="hero-badge">{{ $settings->hero_badge ?? '✦ Welcome to Your New Home' }}</span>
+                <h1 class="hero-title">{{ $settings->hero_title ?? 'Experience Safe, Clean & Homely Living' }}</h1>
+                <p class="hero-subtitle">{{ $settings->hero_subtitle ?? 'Exclusively designed for female students and working professionals in Kochi. Attached bathrooms in all rooms, 3 fresh daily meals, and 24/7 security.' }}</p>
             </div>
 
-            <!-- 3 FEATURED CARDS (AS SEEN IN VIDEO 00:00) -->
+            <!-- 3 FEATURED CARDS (DYNAMIC FROM BACKEND) -->
             <div class="featured-cards-grid" id="rooms">
-                <!-- CARD 1: 5 & 6-BED ROOM (ROOM A1, B1) -->
-                <div class="room-card">
-                    <div class="room-card-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=700&q=80" alt="Bed in 6-Bed Room" class="room-card-img">
-                        <div class="price-badge">
-                            <strong>₹4,200</strong> / month
+                @if($websiteRooms->isNotEmpty())
+                    @foreach($websiteRooms->take(2) as $rItem)
+                        <div class="room-card">
+                            <div class="room-card-img-wrap">
+                                <img src="{{ $rItem->image_url ?: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=700&q=80' }}" alt="{{ $rItem->title }}" class="room-card-img">
+                                <div class="price-badge">
+                                    <strong>{{ $rItem->price_tag ?: ('₹' . number_format($rItem->rent_without_food ?: $rItem->monthly_rent)) }}</strong> / month
+                                </div>
+                            </div>
+                            <div class="room-card-body">
+                                <h3 class="room-card-title">{{ $rItem->title }}</h3>
+                                <div class="room-meta-row">
+                                    <span class="room-meta-item">🛏️ {{ $rItem->sleeps_text ?: ($rItem->sharing_type) }}</span>
+                                    <span class="room-meta-item">🪜 {{ $rItem->bed_type_text ?: ('₹' . number_format($rItem->monthly_rent) . ' with food') }}</span>
+                                </div>
+                                <a href="javascript:void(0)" onclick="openEnquiryModal('{{ $rItem->title }}')" class="card-bottom-link">See availability →</a>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <!-- DEFAULT ROOM 1 (Room A1, B1) -->
+                    <div class="room-card">
+                        <div class="room-card-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=700&q=80" alt="Bed in 6-Bed Room" class="room-card-img">
+                            <div class="price-badge">
+                                <strong>₹4,200</strong> / month
+                            </div>
+                        </div>
+                        <div class="room-card-body">
+                            <h3 class="room-card-title">Bed in Sharing Room (Room A1, B1) with Attached Bathroom</h3>
+                            <div class="room-meta-row">
+                                <span class="room-meta-item">🛏️ Rooms A1 & B1</span>
+                                <span class="room-meta-item">₹4,200 / ₹6,500 with food</span>
+                            </div>
+                            <a href="javascript:void(0)" onclick="openEnquiryModal('Room A1 / B1')" class="card-bottom-link">See availability →</a>
                         </div>
                     </div>
-                    <div class="room-card-body">
-                        <h3 class="room-card-title">Bed in Sharing Room (Room A1, B1) with Attached Bathroom</h3>
-                        <div class="room-meta-row">
-                            <span class="room-meta-item">🛏️ Rooms A1 & B1</span>
-                            <span class="room-meta-item">₹4,200 / ₹6,500 with food</span>
-                        </div>
-                        <a href="javascript:void(0)" onclick="openEnquiryModal('Room A1 / B1')" class="card-bottom-link">See availability →</a>
-                    </div>
-                </div>
 
-                <!-- CARD 2: 2-SHARING ROOM (ROOM A3 / B3) -->
-                <div class="room-card">
-                    <div class="room-card-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=700&q=80" alt="Double Room with Private Bathroom" class="room-card-img">
-                        <div class="price-badge">
-                            <strong>₹8,600</strong> / month
+                    <!-- DEFAULT ROOM 2 (Room A3, B3) -->
+                    <div class="room-card">
+                        <div class="room-card-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=700&q=80" alt="Double Room" class="room-card-img">
+                            <div class="price-badge">
+                                <strong>₹8,600</strong> / month
+                            </div>
+                        </div>
+                        <div class="room-card-body">
+                            <h3 class="room-card-title">Double Room (Room A3, B3) with Attached Bathroom</h3>
+                            <div class="room-meta-row">
+                                <span class="room-meta-item">🛏️ 2 Sleeps</span>
+                                <span class="room-meta-item">₹6,500 / ₹8,600 with food</span>
+                            </div>
+                            <a href="javascript:void(0)" onclick="openEnquiryModal('2-Sharing Room (A3/B3)')" class="card-bottom-link">See availability →</a>
                         </div>
                     </div>
-                    <div class="room-card-body">
-                        <h3 class="room-card-title">Double Room (Room A3, B3) with Attached Bathroom</h3>
-                        <div class="room-meta-row">
-                            <span class="room-meta-item">🛏️ 2 Sleeps</span>
-                            <span class="room-meta-item">₹6,500 / ₹8,600 with food</span>
-                        </div>
-                        <a href="javascript:void(0)" onclick="openEnquiryModal('2-Sharing Room (A3/B3)')" class="card-bottom-link">See availability →</a>
-                    </div>
-                </div>
+                @endif
 
                 <!-- CARD 3: HOSTELLER DEEP NAVY PROMO CARD ("STAY LONGER, SAVE MORE") -->
                 <div class="promo-navy-card">
                     <div>
-                        <h2>Stay Longer, Save More</h2>
-                        <p class="promo-tagline">It's simple: transparent pricing with zero hidden charges and total peace of mind!</p>
+                        <h2>{{ $settings->promo_title ?? 'Stay Longer, Save More' }}</h2>
+                        <p class="promo-tagline">{{ $settings->promo_tagline ?? 'It\'s simple: transparent pricing with zero hidden charges and total peace of mind!' }}</p>
 
                         <ul class="promo-perks-list">
                             <li class="promo-perk-item">
                                 <span class="promo-check-icon">✓</span>
-                                <div><strong>Healthy 3 Daily Home-Cooked Meals</strong> with South & North Indian varieties.</div>
+                                <div><strong>{{ $settings->promo_perk_1 ?? 'Healthy 3 Daily Home-Cooked Meals with South & North Indian varieties.' }}</strong></div>
                             </li>
                             <li class="promo-perk-item">
                                 <span class="promo-check-icon">✓</span>
-                                <div><strong>Flexible Plans from ₹4,200/mo</strong> (Without Food) to ₹6,500/mo (With Food).</div>
+                                <div><strong>{{ $settings->promo_perk_2 ?? 'Flexible Plans from ₹4,200/mo (Without Food) to ₹6,500/mo (With Food).' }}</strong></div>
                             </li>
                             <li class="promo-perk-item">
                                 <span class="promo-check-icon">✓</span>
-                                <div><strong>Attached Bathrooms in 100% of rooms</strong> with 24/7 hot & cold water.</div>
+                                <div><strong>{{ $settings->promo_perk_3 ?? 'Attached Bathrooms in 100% of rooms with 24/7 hot & cold water.' }}</strong></div>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <button type="button" class="btn btn-white" onclick="openEnquiryModal('Hostel Stay Plan')">Choose room</button>
+                        <button type="button" class="btn btn-white" onclick="openEnquiryModal('Hostel Stay Plan')">{{ $settings->promo_btn_text ?? 'Choose room' }}</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION: "WE HAVE EVERYTHING YOU NEED" (VIDEO 00:02) -->
+    <!-- SECTION: "WE HAVE EVERYTHING YOU NEED" (FACILITIES DYNAMIC FROM BACKEND) -->
     <section class="everything-section" id="facilities">
         <div class="container everything-grid">
             <div class="everything-content">
@@ -1522,37 +1540,46 @@
                 <p class="everything-intro">Thoughtfully created facilities exclusively for female students and working professionals in Kochi. Live comfortably in a safe, hygienic, and peaceful atmosphere.</p>
 
                 <div class="features-2x2-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon-box">📶</div>
-                        <div class="feature-item-text">
-                            <h4>Free high speed WiFi</h4>
-                            <p>High-speed fiber internet for uninterrupted work & online studies.</p>
+                    @if($facilities->isNotEmpty())
+                        @foreach($facilities as $fac)
+                            <div class="feature-item">
+                                <div class="feature-icon-box">{{ $fac->icon }}</div>
+                                <div class="feature-item-text">
+                                    <h4>{{ $fac->title }}</h4>
+                                    <p>{{ $fac->description }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="feature-item">
+                            <div class="feature-icon-box">📶</div>
+                            <div class="feature-item-text">
+                                <h4>Free high speed WiFi</h4>
+                                <p>High-speed fiber internet for uninterrupted work & online studies.</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="feature-icon-box">📍</div>
-                        <div class="feature-item-text">
-                            <h4>Convenient location in center</h4>
-                            <p>Quick access to bus stands, metro, InfoPark & educational institutes.</p>
+                        <div class="feature-item">
+                            <div class="feature-icon-box">📍</div>
+                            <div class="feature-item-text">
+                                <h4>Convenient location in center</h4>
+                                <p>Quick access to bus stands, metro, InfoPark & educational institutes.</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="feature-icon-box">🧳</div>
-                        <div class="feature-item-text">
-                            <h4>Free storage of luggage</h4>
-                            <p>Spacious lockable wardrobes and dedicated safe luggage space.</p>
+                        <div class="feature-item">
+                            <div class="feature-icon-box">🧳</div>
+                            <div class="feature-item-text">
+                                <h4>Free storage of luggage</h4>
+                                <p>Spacious lockable wardrobes and dedicated safe luggage space.</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="feature-icon-box">🅿️</div>
-                        <div class="feature-item-text">
-                            <h4>Parking place allocated</h4>
-                            <p>Dedicated secure two-wheeler and vehicle parking on the premises.</p>
+                        <div class="feature-item">
+                            <div class="feature-icon-box">🅿️</div>
+                            <div class="feature-item-text">
+                                <h4>Parking place allocated</h4>
+                                <p>Dedicated secure two-wheeler and vehicle parking on the premises.</p>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
 
                 <div class="everything-actions">
@@ -1562,11 +1589,11 @@
             </div>
 
             <div class="everything-media-wrap">
-                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80" alt="Happy residents at SJ Ladies Hostel" class="everything-media-img">
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80" alt="Happy residents at {{ $settings->name }}" class="everything-media-img">
                 <div class="media-floating-badge">
                     <div class="media-badge-icon">▶</div>
                     <div>
-                        <div class="media-badge-title">SJ Ladies Hostel · Kochi</div>
+                        <div class="media-badge-title">{{ $settings->name ?? 'SJ Ladies Hostel' }} · Kochi</div>
                         <div class="media-badge-sub">24/7 Security & Homely Care</div>
                     </div>
                 </div>
@@ -1574,55 +1601,55 @@
         </div>
     </section>
 
-    <!-- SECTION: 4-COLUMN RATINGS & TRUST STRIP (VIDEO 00:05) -->
+    <!-- SECTION: 4-COLUMN RATINGS & TRUST STRIP (DYNAMIC FROM BACKEND) -->
     <section class="ratings-strip-section">
         <div class="container ratings-strip-grid">
             <div class="rating-col">
-                <div class="rating-score">4.9 <span>/5</span></div>
-                <div class="rating-notes">240+ verified ratings</div>
-                <div class="rating-brand-badge">Google Reviews</div>
+                <div class="rating-score">{{ $settings->stat_1_val ?? '4.9 /5' }}</div>
+                <div class="rating-notes">{{ $settings->stat_1_sub ?? '240+ verified ratings' }}</div>
+                <div class="rating-brand-badge">{{ $settings->stat_1_label ?? 'Google Reviews' }}</div>
             </div>
             <div class="rating-col">
-                <div class="rating-score">100% <span>Safe</span></div>
-                <div class="rating-notes">Biometric & CCTV</div>
-                <div class="rating-brand-badge">24/7 Protection</div>
+                <div class="rating-score">{{ $settings->stat_2_val ?? '100% Safe' }}</div>
+                <div class="rating-notes">{{ $settings->stat_2_sub ?? 'Biometric & CCTV' }}</div>
+                <div class="rating-brand-badge">{{ $settings->stat_2_label ?? '24/7 Protection' }}</div>
             </div>
             <div class="rating-col">
-                <div class="rating-score">3 <span>Meals</span></div>
-                <div class="rating-notes">Fresh & Homely daily</div>
-                <div class="rating-brand-badge">Hygienic Kitchen</div>
+                <div class="rating-score">{{ $settings->stat_3_val ?? '3 Meals' }}</div>
+                <div class="rating-notes">{{ $settings->stat_3_sub ?? 'Fresh & Homely daily' }}</div>
+                <div class="rating-brand-badge">{{ $settings->stat_3_label ?? 'Hygienic Kitchen' }}</div>
             </div>
             <div class="rating-col">
-                <div class="rating-score">98% <span>Rate</span></div>
-                <div class="rating-notes">Resident satisfaction</div>
-                <div class="rating-brand-badge">Recommended</div>
+                <div class="rating-score">{{ $settings->stat_4_val ?? '98% Rate' }}</div>
+                <div class="rating-notes">{{ $settings->stat_4_sub ?? 'Resident satisfaction' }}</div>
+                <div class="rating-brand-badge">{{ $settings->stat_4_label ?? 'Recommended' }}</div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION: "WHAT OUR GUESTS SAY" TESTIMONIALS (VIDEO 00:06) -->
+    <!-- SECTION: "WHAT OUR GUESTS SAY" TESTIMONIALS (DYNAMIC FROM BACKEND) -->
     <section class="testimonials-section" id="testimonials">
         <div class="container">
             <div class="section-header-center">
                 <h2>What our guests say</h2>
-                <p>Read authentic feedback from working women and students living at SJ Ladies Hostel.</p>
+                <p>Read authentic feedback from working women and students living at {{ $settings->name ?? 'SJ Ladies Hostel' }}.</p>
             </div>
 
             <div class="testimonial-showcase-grid">
                 <div class="testimonial-photo-wrap">
-                    <img id="testimonial-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Hostel Resident" class="testimonial-photo">
+                    <img id="testimonial-avatar" src="{{ $testimonials->first()?->avatar_url ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80' }}" alt="Resident Photo" class="testimonial-photo">
                 </div>
 
                 <div class="testimonial-content">
-                    <div class="star-row">★★★★★</div>
-                    <div class="stay-date-tag" id="testimonial-date">Date of stay: October 2026</div>
-                    <h3 class="testimonial-quote-title" id="testimonial-headline">Very cozy room close to everything, feels just like home!</h3>
-                    <p class="testimonial-quote-body" id="testimonial-text">"SJ Ladies Hostel is truly a home away from home. The food is hygienic and delicious, attached bathrooms in every room make morning routines effortless, and the warden takes care of everyone like family. Highly recommended for any woman in Kochi!"</p>
+                    <div class="star-row" id="testimonial-stars">★★★★★</div>
+                    <div class="stay-date-tag" id="testimonial-date">{{ $testimonials->first()?->stay_date ?: 'Date of stay: October 2026' }}</div>
+                    <h3 class="testimonial-quote-title" id="testimonial-headline">{{ $testimonials->first()?->headline ?: 'Very cozy room close to everything, feels just like home!' }}</h3>
+                    <p class="testimonial-quote-body" id="testimonial-text">"{{ $testimonials->first()?->quote ?: 'SJ Ladies Hostel is truly a home away from home. The food is hygienic and delicious, attached bathrooms in every room make morning routines effortless, and the warden takes care of everyone like family.' }}"</p>
 
                     <div class="testimonial-author-row">
                         <div class="author-info">
-                            <h4 id="testimonial-name">Lisa Adams</h4>
-                            <p id="testimonial-role">Software Engineer, Kakkanad</p>
+                            <h4 id="testimonial-name">{{ $testimonials->first()?->name ?: 'Lisa Adams' }}</h4>
+                            <p id="testimonial-role">{{ $testimonials->first()?->role ?: 'Software Engineer, Kakkanad' }}</p>
                         </div>
 
                         <div class="testimonial-nav-arrows">
@@ -1635,7 +1662,7 @@
         </div>
     </section>
 
-    <!-- SECTION: "FIND SUITABLE BUDGET ACCOMMODATION" (VIDEO 00:09) -->
+    <!-- SECTION: "FIND SUITABLE BUDGET ACCOMMODATION" -->
     <section class="budget-accom-section">
         <div class="container budget-grid">
             <div class="budget-content">
@@ -1686,54 +1713,56 @@
         </div>
     </section>
 
-    <!-- SECTION: "PHOTOS OF OUR ROOMS" BENTO GALLERY (VIDEO 00:13) -->
+    <!-- SECTION: "PHOTOS OF OUR ROOMS" BENTO GALLERY (DYNAMIC FROM BACKEND) -->
     <section class="gallery-section" id="gallery">
         <div class="container">
             <div class="gallery-header-row">
                 <h2>Photos of our rooms</h2>
-                <button type="button" class="btn btn-outline" onclick="openLightbox('{{ asset('images/building.jpg') }}')">View all photos</button>
+                <button type="button" class="btn btn-outline" onclick="openLightbox('{{ $gallery->first()?->image_url ?: asset('images/building.jpg') }}')">View all photos</button>
             </div>
 
             <div class="bento-gallery-grid">
-                <!-- TALL BUILDING PHOTO (AS SEEN IN VIDEO) -->
-                <div class="gallery-item tall" onclick="openLightbox('{{ asset('images/building.jpg') }}')">
-                    <img src="{{ asset('images/building.jpg') }}" alt="Hostel Building" class="gallery-img">
-                    <div class="gallery-overlay-icon">⛶</div>
-                    <div class="gallery-caption">Secure Building Exterior & Entrance</div>
-                </div>
-
-                <!-- BEDROOM 1 -->
-                <div class="gallery-item" onclick="openLightbox('{{ asset('images/hall.jpg') }}')">
-                    <img src="{{ asset('images/hall.jpg') }}" alt="Spacious Room" class="gallery-img">
-                    <div class="gallery-overlay-icon">⛶</div>
-                    <div class="gallery-caption">Cozy Bedroom with Attached Bath</div>
-                </div>
-
-                <!-- MIRROR & LIVING -->
-                <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=700&q=80')">
-                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=700&q=80" alt="Modern Room Setup" class="gallery-img">
-                    <div class="gallery-overlay-icon">⛶</div>
-                    <div class="gallery-caption">Comfortable Interior & Wardrobes</div>
-                </div>
-
-                <!-- KITCHEN & DINING -->
-                <div class="gallery-item" onclick="openLightbox('{{ asset('images/kitchen.jpg') }}')">
-                    <img src="{{ asset('images/kitchen.jpg') }}" alt="Hygienic Dining & Kitchen" class="gallery-img">
-                    <div class="gallery-overlay-icon">⛶</div>
-                    <div class="gallery-caption">Hygienic Dining & Kitchen Area</div>
-                </div>
-
-                <!-- BEDROOM 2 -->
-                <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=80')">
-                    <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=80" alt="Clean Beds" class="gallery-img">
-                    <div class="gallery-overlay-icon">⛶</div>
-                    <div class="gallery-caption">Naturally Ventilated Bedrooms</div>
-                </div>
+                @if($gallery->isNotEmpty())
+                    @foreach($gallery as $gItem)
+                        <div class="gallery-item {{ $gItem->is_tall ? 'tall' : '' }}" onclick="openLightbox('{{ $gItem->image_url }}')">
+                            <img src="{{ $gItem->image_url }}" alt="{{ $gItem->title }}" class="gallery-img">
+                            <div class="gallery-overlay-icon">⛶</div>
+                            <div class="gallery-caption">{{ $gItem->title }}</div>
+                        </div>
+                    @endforeach
+                @else
+                    <!-- DEFAULT BENTO GRID -->
+                    <div class="gallery-item tall" onclick="openLightbox('{{ asset('images/building.jpg') }}')">
+                        <img src="{{ asset('images/building.jpg') }}" alt="Hostel Building" class="gallery-img">
+                        <div class="gallery-overlay-icon">⛶</div>
+                        <div class="gallery-caption">Secure Building Exterior & Entrance</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('{{ asset('images/hall.jpg') }}')">
+                        <img src="{{ asset('images/hall.jpg') }}" alt="Spacious Room" class="gallery-img">
+                        <div class="gallery-overlay-icon">⛶</div>
+                        <div class="gallery-caption">Cozy Bedroom with Attached Bath</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=700&q=80')">
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=700&q=80" alt="Modern Room Setup" class="gallery-img">
+                        <div class="gallery-overlay-icon">⛶</div>
+                        <div class="gallery-caption">Comfortable Interior & Wardrobes</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('{{ asset('images/kitchen.jpg') }}')">
+                        <img src="{{ asset('images/kitchen.jpg') }}" alt="Hygienic Dining" class="gallery-img">
+                        <div class="gallery-overlay-icon">⛶</div>
+                        <div class="gallery-caption">Hygienic Dining & Kitchen Area</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=80')">
+                        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=80" alt="Clean Beds" class="gallery-img">
+                        <div class="gallery-overlay-icon">⛶</div>
+                        <div class="gallery-caption">Naturally Ventilated Bedrooms</div>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
 
-    <!-- SECTION: "HOSTELLER NEWS" / HOSTEL LIFE (VIDEO 00:16) -->
+    <!-- SECTION: "HOSTELLER NEWS" / HOSTEL LIFE (DYNAMIC FROM BACKEND) -->
     <section class="news-section" id="news">
         <div class="container">
             <div class="news-header-row">
@@ -1742,58 +1771,72 @@
             </div>
 
             <div class="news-cards-grid">
-                <!-- CARD 1 -->
-                <div class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80" alt="Homely Food" class="news-card-img">
-                        <span class="news-category-tag">Food & Health</span>
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Fresh Kerala meals prepared with pure hygiene every single day</h3>
-                        <p class="news-card-excerpt">Enjoy wholesome breakfast, packed lunch for work/college, hot evening tea with snacks, and light delicious dinner.</p>
-                        <div class="news-card-footer">
-                            <span>November 2026</span>
-                            <span>👁️ 180 views</span>
+                @if($updates->isNotEmpty())
+                    @foreach($updates as $uItem)
+                        <div class="news-card">
+                            <div class="news-card-img-wrap">
+                                <img src="{{ $uItem->image_url ?: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80' }}" alt="{{ $uItem->title }}" class="news-card-img">
+                                <span class="news-category-tag">{{ $uItem->category }}</span>
+                            </div>
+                            <div class="news-card-body">
+                                <h3 class="news-card-title">{{ $uItem->title }}</h3>
+                                <p class="news-card-excerpt">{{ $uItem->excerpt }}</p>
+                                <div class="news-card-footer">
+                                    <span>{{ $uItem->date_text ?: 'November 2026' }}</span>
+                                    <span>👁️ {{ $uItem->views_count }} views</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="news-card">
+                        <div class="news-card-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80" alt="Homely Food" class="news-card-img">
+                            <span class="news-category-tag">Food & Health</span>
+                        </div>
+                        <div class="news-card-body">
+                            <h3 class="news-card-title">Fresh Kerala meals prepared with pure hygiene every single day</h3>
+                            <p class="news-card-excerpt">Enjoy wholesome breakfast, packed lunch for work/college, hot evening tea with snacks, and light delicious dinner.</p>
+                            <div class="news-card-footer">
+                                <span>November 2026</span>
+                                <span>👁️ 180 views</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- CARD 2 -->
-                <div class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=700&q=80" alt="Study Atmosphere" class="news-card-img">
-                        <span class="news-category-tag">Community</span>
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">A quiet, focused study and work atmosphere for women</h3>
-                        <p class="news-card-excerpt">Designed for exam preparation, remote IT work, and peaceful relaxation without noisy interruptions.</p>
-                        <div class="news-card-footer">
-                            <span>November 2026</span>
-                            <span>👁️ 240 views</span>
+                    <div class="news-card">
+                        <div class="news-card-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=700&q=80" alt="Study Atmosphere" class="news-card-img">
+                            <span class="news-category-tag">Community</span>
+                        </div>
+                        <div class="news-card-body">
+                            <h3 class="news-card-title">A quiet, focused study and work atmosphere for women</h3>
+                            <p class="news-card-excerpt">Designed for exam preparation, remote IT work, and peaceful relaxation without noisy interruptions.</p>
+                            <div class="news-card-footer">
+                                <span>November 2026</span>
+                                <span>👁️ 240 views</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- CARD 3 -->
-                <div class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80" alt="Safe Living" class="news-card-img">
-                        <span class="news-category-tag">Security</span>
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">24/7 CCTV surveillance and verified biometric safety</h3>
-                        <p class="news-card-excerpt">Continuous safety monitoring, power backup, caring residential warden, and strict visitor verification.</p>
-                        <div class="news-card-footer">
-                            <span>November 2026</span>
-                            <span>👁️ 310 views</span>
+                    <div class="news-card">
+                        <div class="news-card-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80" alt="Safe Living" class="news-card-img">
+                            <span class="news-category-tag">Security</span>
+                        </div>
+                        <div class="news-card-body">
+                            <h3 class="news-card-title">24/7 CCTV surveillance and verified biometric safety</h3>
+                            <p class="news-card-excerpt">Continuous safety monitoring, power backup, caring residential warden, and strict visitor verification.</p>
+                            <div class="news-card-footer">
+                                <span>November 2026</span>
+                                <span>👁️ 310 views</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </section>
 
-    <!-- SECTION: "CONTACTS" & LOCATION (VIDEO 00:20) -->
+    <!-- SECTION: "CONTACTS" & LOCATION (DYNAMIC FROM BACKEND) -->
     <section class="contacts-section" id="contacts">
         <div class="container contacts-grid">
             <div class="contacts-content">
@@ -1806,7 +1849,9 @@
                         <div class="contact-box-text">
                             <h4>Phone</h4>
                             <p><a href="tel:{{ $settings->phone ?? '8590621496' }}">+91 {{ $settings->phone ?? '8590621496' }}</a></p>
-                            <p><a href="tel:9207096339"></a></p>
+                            @if(!empty($settings->alternate_phone))
+                                <p><a href="tel:{{ $settings->alternate_phone }}">+91 {{ $settings->alternate_phone }}</a></p>
+                            @endif
                         </div>
                     </div>
 
@@ -1830,7 +1875,7 @@
                         <div class="contact-icon-box">🕒</div>
                         <div class="contact-box-text">
                             <h4>Visiting Hours</h4>
-                            <p>Everyday<br>6:00 AM – 9:30 PM</p>
+                            <p>{{ $settings->visiting_hours ?? 'Everyday 6:00 AM – 9:30 PM' }}</p>
                         </div>
                     </div>
                 </div>
@@ -1838,25 +1883,31 @@
                 <button type="button" class="btn btn-primary" onclick="openEnquiryModal('Contact Section')">Send an Enquiry →</button>
             </div>
 
-            <!-- GOOGLE MAPS EMBED -->
+            <!-- GOOGLE MAPS EMBED (DYNAMIC FROM BACKEND) -->
             <div class="map-card-wrap">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125745.74838687728!2d76.22329841838634!3d9.98234281358327!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d514abec6bf%3A0xbd582caa5844192!2sKochi%2C%20Kerala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin!4v1700000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="SJ Ladies Hostel Location Map"></iframe>
+                <iframe src="{{ $settings->map_embed_url ?: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125745.74838687728!2d76.22329841838634!3d9.98234281358327!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d514abec6bf%3A0xbd582caa5844192!2sKochi%2C%20Kerala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin' }}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ $settings->name }} Location Map"></iframe>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER (EXACT DEEP NAVY MODEL IN VIDEO 00:21) -->
+    <!-- FOOTER (DYNAMIC FROM BACKEND) -->
     <footer class="site-footer">
         <div class="container">
             <div class="footer-grid">
                 <!-- COL 1: BRAND -->
                 <div class="footer-brand">
-                    <h3>SJ <span>Ladies Hostel</span></h3>
-                    <p>A welcoming, clean, and secure haven for female students and working professionals in Kochi. Complete with delicious home-cooked meals and modern amenities.</p>
+                    <h3>
+                        {{ $nameParts[0] }} <span>{{ $nameParts[1] ?? '' }}</span>
+                    </h3>
+                    <p>{{ $settings->notes ?? 'A welcoming, clean, and secure haven for female students and working professionals in Kochi. Complete with delicious home-cooked meals and modern amenities.' }}</p>
                     <div class="footer-social-row">
-                        <a href="https://wa.me/91{{ preg_replace('/[^0-9]/','',$settings->phone ?? '8590621496') }}" class="social-circle-link" title="WhatsApp">💬</a>
-                        <a href="#" class="social-circle-link" title="Instagram">📷</a>
-                        <a href="#" class="social-circle-link" title="Facebook">📘</a>
+                        <a href="https://wa.me/91{{ preg_replace('/[^0-9]/','',$settings->whatsapp_number ?? $settings->phone ?? '8590621496') }}" class="social-circle-link" title="WhatsApp" target="_blank" rel="noopener noreferrer">💬</a>
+                        @if(!empty($settings->instagram_url))
+                            <a href="{{ $settings->instagram_url }}" class="social-circle-link" title="Instagram" target="_blank" rel="noopener noreferrer">📷</a>
+                        @endif
+                        @if(!empty($settings->facebook_url))
+                            <a href="{{ $settings->facebook_url }}" class="social-circle-link" title="Facebook" target="_blank" rel="noopener noreferrer">📘</a>
+                        @endif
                         <a href="#contacts" class="social-circle-link" title="Directions">📍</a>
                     </div>
                 </div>
@@ -1895,14 +1946,14 @@
             </div>
 
             <div class="footer-bottom-bar">
-                <div>© {{ date('Y') }} SJ Ladies Hostel. All rights reserved.</div>
+                <div>© {{ date('Y') }} {{ $settings->name ?? 'SJ Ladies Hostel' }}. All rights reserved.</div>
                 <div>Designed with safety & comfort in Kochi, Kerala.</div>
             </div>
         </div>
     </footer>
 
     <!-- FLOATING WHATSAPP CTA -->
-    <a href="https://wa.me/91{{ preg_replace('/[^0-9]/','',$settings->phone ?? '8590621496') }}?text={{ rawurlencode('Hello SJ Ladies Hostel! I would like to enquire about room availability and rates.') }}" target="_blank" rel="noopener noreferrer" class="floating-wa-btn" title="Chat on WhatsApp">
+    <a href="https://wa.me/91{{ preg_replace('/[^0-9]/','',$settings->whatsapp_number ?? $settings->phone ?? '8590621496') }}?text={{ rawurlencode('Hello ' . ($settings->name ?? 'SJ Ladies Hostel') . '! I would like to enquire about room availability and rates.') }}" target="_blank" rel="noopener noreferrer" class="floating-wa-btn" title="Chat on WhatsApp">
         <span style="font-size:18px">💬</span>
         <span>WhatsApp Us</span>
     </a>
@@ -1967,44 +2018,51 @@
 
     <!-- JAVASCRIPT FOR TESTIMONIAL SLIDER & MODAL -->
     <script>
-        // Testimonials data for interactive slider
-        const testimonials = [
+        // Testimonials data passed dynamically from backend
+        const dynamicTestimonials = @json($testimonials);
+        const defaultTestimonials = [
             {
                 name: "Lisa Adams",
                 role: "Software Engineer, Kakkanad",
-                date: "Date of stay: October 2026",
+                stay_date: "Date of stay: October 2026",
                 headline: "Very cozy room close to everything, feels just like home!",
-                text: "SJ Ladies Hostel is truly a home away from home. The food is hygienic and delicious, attached bathrooms in every room make morning routines effortless, and the warden takes care of everyone like family. Highly recommended for any woman in Kochi!",
-                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80"
+                quote: "SJ Ladies Hostel is truly a home away from home. The food is hygienic and delicious, attached bathrooms in every room make morning routines effortless, and the warden takes care of everyone like family. Highly recommended for any woman in Kochi!",
+                avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80",
+                rating: 5
             },
             {
                 name: "Betty Randal",
                 role: "Postgraduate Student, Rajagiri",
-                date: "Date of stay: September 2026",
+                stay_date: "Date of stay: September 2026",
                 headline: "Extremely safe with wonderful food and calm study environment",
-                text: "Being a student, having a quiet atmosphere and high-speed Wi-Fi was essential. The roommates are friendly, the security is strict, and the homely food saves so much time every day. 10/10 stay!",
-                avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80"
+                quote: "Being a student, having a quiet atmosphere and high-speed Wi-Fi was essential. The roommates are friendly, the security is strict, and the homely food saves so much time every day. 10/10 stay!",
+                avatar_url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80",
+                rating: 5
             },
             {
                 name: "Dr. Gopika Krishnan",
                 role: "Healthcare Professional",
-                date: "Date of stay: August 2026",
+                stay_date: "Date of stay: August 2026",
                 headline: "Clean attached bathrooms, 24/7 hot water, and flexible rules",
-                text: "Hospital shift duties can be demanding, but SJ Ladies Hostel has been the most comfortable accommodation I have found in Kochi. Clean rooms, supportive staff, and peaceful nights.",
-                avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80"
+                quote: "Hospital shift duties can be demanding, but SJ Ladies Hostel has been the most comfortable accommodation I have found in Kochi. Clean rooms, supportive staff, and peaceful nights.",
+                avatar_url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80",
+                rating: 5
             }
         ];
 
+        const testimonials = (dynamicTestimonials && dynamicTestimonials.length > 0) ? dynamicTestimonials : defaultTestimonials;
         let currentTestimonialIdx = 0;
 
         function updateTestimonial(idx) {
             const t = testimonials[idx];
-            document.getElementById('testimonial-avatar').src = t.avatar;
+            if (!t) return;
+            document.getElementById('testimonial-avatar').src = t.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80';
             document.getElementById('testimonial-name').textContent = t.name;
-            document.getElementById('testimonial-role').textContent = t.role;
-            document.getElementById('testimonial-date').textContent = t.date;
-            document.getElementById('testimonial-headline').textContent = t.headline;
-            document.getElementById('testimonial-text').textContent = `"${t.text}"`;
+            document.getElementById('testimonial-role').textContent = t.role || '';
+            document.getElementById('testimonial-date').textContent = t.stay_date || '';
+            document.getElementById('testimonial-headline').textContent = t.headline || '';
+            document.getElementById('testimonial-text').textContent = `"${t.quote || ''}"`;
+            document.getElementById('testimonial-stars').textContent = '★'.repeat(t.rating || 5);
         }
 
         function nextTestimonial() {
@@ -2022,7 +2080,7 @@
             const modal = document.getElementById('enquiryModal');
             if (roomPreference) {
                 document.getElementById('modalRoomTitle').textContent = `Enquire: ${roomPreference}`;
-                if (roomPreference.includes('2-Sharing')) {
+                if (roomPreference.includes('2-Sharing') || roomPreference.includes('Double')) {
                     document.getElementById('enquiry_sharing').value = 'Two Sharing';
                 } else if (roomPreference.includes('6-Sharing')) {
                     document.getElementById('enquiry_sharing').value = 'Six Sharing';

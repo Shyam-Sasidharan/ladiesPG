@@ -6,13 +6,18 @@ use App\Models\ActiveAllocation;
 use App\Models\Allocation;
 use App\Models\Bed;
 use App\Models\Checkout;
+use App\Models\Facility;
 use App\Models\Floor;
+use App\Models\GalleryImage;
+use App\Models\HostelUpdate;
 use App\Models\PgSetting;
 use App\Models\RentRecord;
 use App\Models\Resident;
 use App\Models\Room;
 use App\Models\RoomCapacityHistory;
+use App\Models\Testimonial;
 use App\Models\User;
+use App\Models\WebsiteRoomShowcase;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,15 +29,176 @@ class SJHostelSeeder extends Seeder
             // Admin user reference
             $admin = User::where('is_admin', true)->first();
 
-            // 1. Update or create PG Settings
+            // 1. Update or create PG Settings & Website CMS Branding
             $setting = PgSetting::first() ?? new PgSetting;
             $setting->fill([
                 'name' => 'SJ Ladies Hostel',
+                'tagline' => 'Safe & Homely Stay · Kochi',
                 'phone' => '8590621496',
+                'alternate_phone' => '9207096339',
+                'whatsapp_number' => '8590621496',
                 'email' => 'sjladieshostel07@gmail.com',
-                'address' => 'SJ Ladies Hostel, Coordinates: 9.9911476, 76.3189574',
+                'address' => 'SJ Ladies Hostel, Near Metro / IT Hub, Kochi, Kerala',
+                'visiting_hours' => 'Everyday 6:00 AM – 9:30 PM',
+                'map_embed_url' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125745.74838687728!2d76.22329841838634!3d9.98234281358327!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d514abec6bf%3A0xbd582caa5844192!2sKochi%2C%20Kerala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin',
                 'notes' => 'A Safe & Comfortable Stay for Women in Kochi.',
+                'hero_badge' => '✦ Welcome to Your New Home',
+                'hero_title' => 'Experience Safe, Clean & Homely Living',
+                'hero_subtitle' => 'Exclusively designed for female students and working professionals in Kochi. Attached bathrooms in all rooms, 3 fresh daily meals, and 24/7 security.',
+                'promo_title' => 'Stay Longer, Save More',
+                'promo_tagline' => 'It\'s simple: transparent pricing with zero hidden charges and total peace of mind!',
+                'promo_perk_1' => 'Healthy 3 Daily Home-Cooked Meals with South & North Indian varieties.',
+                'promo_perk_2' => 'Flexible Plans from ₹4,200/mo (Without Food) to ₹6,500/mo (With Food).',
+                'promo_perk_3' => 'Attached Bathrooms in 100% of rooms with 24/7 hot & cold water.',
+                'promo_btn_text' => 'Choose room',
+                'stat_1_val' => '4.9 /5',
+                'stat_1_sub' => '240+ verified ratings',
+                'stat_1_label' => 'Google Reviews',
+                'stat_2_val' => '100% Safe',
+                'stat_2_sub' => 'Biometric & CCTV',
+                'stat_2_label' => '24/7 Protection',
+                'stat_3_val' => '3 Meals',
+                'stat_3_sub' => 'Fresh & Homely daily',
+                'stat_3_label' => 'Hygienic Kitchen',
+                'stat_4_val' => '98% Rate',
+                'stat_4_sub' => 'Resident satisfaction',
+                'stat_4_label' => 'Recommended',
             ])->save();
+
+            // 1b. Website Room Showcases
+            if (WebsiteRoomShowcase::count() === 0) {
+                WebsiteRoomShowcase::create([
+                    'title' => 'Bed in Sharing Room (Room A1, B1) with Attached Bathroom',
+                    'sharing_type' => 'Six Sharing',
+                    'room_number' => 'A1, B1',
+                    'monthly_rent' => 6500.00,
+                    'rent_without_food' => 4200.00,
+                    'price_tag' => '₹4,200',
+                    'sleeps_text' => 'Rooms A1 & B1',
+                    'bed_type_text' => '₹4,200 / ₹6,500 with food',
+                    'badge' => 'Most Popular',
+                    'image_url' => 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=700&q=80',
+                    'sort_order' => 1,
+                    'is_active' => true,
+                ]);
+
+                WebsiteRoomShowcase::create([
+                    'title' => 'Double Room (Room A3, B3) with Attached Bathroom',
+                    'sharing_type' => 'Two Sharing',
+                    'room_number' => 'A3, B3',
+                    'monthly_rent' => 8600.00,
+                    'rent_without_food' => 6500.00,
+                    'price_tag' => '₹8,600',
+                    'sleeps_text' => '2 Sleeps',
+                    'bed_type_text' => '₹6,500 / ₹8,600 with food',
+                    'badge' => 'Premium',
+                    'image_url' => 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=700&q=80',
+                    'sort_order' => 2,
+                    'is_active' => true,
+                ]);
+            }
+
+            // 1c. Facilities
+            if (Facility::count() === 0) {
+                $facilityList = [
+                    ['icon' => '📶', 'title' => 'Free high speed WiFi', 'description' => 'High-speed fiber internet for uninterrupted work & online studies.', 'sort_order' => 1],
+                    ['icon' => '📍', 'title' => 'Convenient location in center', 'description' => 'Quick access to bus stands, metro, InfoPark & educational institutes.', 'sort_order' => 2],
+                    ['icon' => '🧳', 'title' => 'Free storage of luggage', 'description' => 'Spacious lockable wardrobes and dedicated safe luggage space.', 'sort_order' => 3],
+                    ['icon' => '🅿️', 'title' => 'Parking place allocated', 'description' => 'Dedicated secure two-wheeler and vehicle parking on the premises.', 'sort_order' => 4],
+                ];
+                foreach ($facilityList as $fac) {
+                    Facility::create($fac);
+                }
+            }
+
+            // 1d. Gallery Photos
+            if (GalleryImage::count() === 0) {
+                $galleryList = [
+                    ['title' => 'Secure Building Exterior & Entrance', 'category' => 'Building', 'image_url' => '/images/building.jpg', 'is_tall' => true, 'sort_order' => 1],
+                    ['title' => 'Cozy Bedroom with Attached Bath', 'category' => 'Bedroom', 'image_url' => '/images/hall.jpg', 'is_tall' => false, 'sort_order' => 2],
+                    ['title' => 'Comfortable Interior & Wardrobes', 'category' => 'Living', 'image_url' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=700&q=80', 'is_tall' => false, 'sort_order' => 3],
+                    ['title' => 'Hygienic Dining & Kitchen Area', 'category' => 'Dining', 'image_url' => '/images/kitchen.jpg', 'is_tall' => false, 'sort_order' => 4],
+                    ['title' => 'Naturally Ventilated Bedrooms', 'category' => 'Bedroom', 'image_url' => 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=80', 'is_tall' => false, 'sort_order' => 5],
+                ];
+                foreach ($galleryList as $gal) {
+                    GalleryImage::create($gal);
+                }
+            }
+
+            // 1e. Testimonials
+            if (Testimonial::count() === 0) {
+                $testimonialList = [
+                    [
+                        'name' => 'Lisa Adams',
+                        'role' => 'Software Engineer, Kakkanad',
+                        'stay_date' => 'Date of stay: October 2026',
+                        'rating' => 5,
+                        'headline' => 'Very cozy room close to everything, feels just like home!',
+                        'quote' => 'SJ Ladies Hostel is truly a home away from home. The food is hygienic and delicious, attached bathrooms in every room make morning routines effortless, and the warden takes care of everyone like family. Highly recommended for any woman in Kochi!',
+                        'avatar_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
+                        'sort_order' => 1,
+                    ],
+                    [
+                        'name' => 'Betty Randal',
+                        'role' => 'Postgraduate Student, Rajagiri',
+                        'stay_date' => 'Date of stay: September 2026',
+                        'rating' => 5,
+                        'headline' => 'Extremely safe with wonderful food and calm study environment',
+                        'quote' => 'Being a student, having a quiet atmosphere and high-speed Wi-Fi was essential. The roommates are friendly, the security is strict, and the homely food saves so much time every day. 10/10 stay!',
+                        'avatar_url' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80',
+                        'sort_order' => 2,
+                    ],
+                    [
+                        'name' => 'Dr. Gopika Krishnan',
+                        'role' => 'Healthcare Professional',
+                        'stay_date' => 'Date of stay: August 2026',
+                        'rating' => 5,
+                        'headline' => 'Clean attached bathrooms, 24/7 hot water, and flexible rules',
+                        'quote' => 'Hospital shift duties can be demanding, but SJ Ladies Hostel has been the most comfortable accommodation I have found in Kochi. Clean rooms, supportive staff, and peaceful nights.',
+                        'avatar_url' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80',
+                        'sort_order' => 3,
+                    ],
+                ];
+                foreach ($testimonialList as $tst) {
+                    Testimonial::create($tst);
+                }
+            }
+
+            // 1f. Hostel Updates
+            if (HostelUpdate::count() === 0) {
+                $updateList = [
+                    [
+                        'title' => 'Fresh Kerala meals prepared with pure hygiene every single day',
+                        'category' => 'Food & Health',
+                        'excerpt' => 'Enjoy wholesome breakfast, packed lunch for work/college, hot evening tea with snacks, and light delicious dinner.',
+                        'image_url' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80',
+                        'date_text' => 'November 2026',
+                        'views_count' => 180,
+                        'sort_order' => 1,
+                    ],
+                    [
+                        'title' => 'A quiet, focused study and work atmosphere for women',
+                        'category' => 'Community',
+                        'excerpt' => 'Designed for exam preparation, remote IT work, and peaceful relaxation without noisy interruptions.',
+                        'image_url' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=700&q=80',
+                        'date_text' => 'November 2026',
+                        'views_count' => 240,
+                        'sort_order' => 2,
+                    ],
+                    [
+                        'title' => '24/7 CCTV surveillance and verified biometric safety',
+                        'category' => 'Security',
+                        'excerpt' => 'Continuous safety monitoring, power backup, caring residential warden, and strict visitor verification.',
+                        'image_url' => 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80',
+                        'date_text' => 'November 2026',
+                        'views_count' => 310,
+                        'sort_order' => 3,
+                    ],
+                ];
+                foreach ($updateList as $upd) {
+                    HostelUpdate::create($upd);
+                }
+            }
 
             // 2. Floors: Ground Floor & First Floor
             $groundFloor = Floor::firstOrCreate(
