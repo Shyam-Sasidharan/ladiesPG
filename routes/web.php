@@ -100,3 +100,12 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
         Route::delete('/updates/{update}', [WebsiteContentController::class, 'destroyUpdate'])->name('updates.destroy');
     });
 });
+
+// Fallback route for storage files when symlink/junction is not served directly by web server
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    abort_unless(file_exists($filePath), 404);
+    $mime = mime_content_type($filePath) ?: 'application/octet-stream';
+    return response()->file($filePath, ['Content-Type' => $mime]);
+})->where('path', '.*')->name('storage.fallback');
+

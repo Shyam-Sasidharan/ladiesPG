@@ -1699,7 +1699,7 @@
             <!-- 3 FEATURED CARDS (DYNAMIC FROM BACKEND) -->
             <div class="featured-cards-grid" id="rooms">
                 @if($websiteRooms->isNotEmpty())
-                    @foreach($websiteRooms->take(2) as $rItem)
+                    @foreach($websiteRooms as $rItem)
                         <div class="room-card">
                             <div class="room-card-img-wrap">
                                 <img src="{{ $rItem->image_url ?: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=700&q=80' }}" alt="{{ $rItem->title }}" class="room-card-img">
