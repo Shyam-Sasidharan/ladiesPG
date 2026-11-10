@@ -320,7 +320,7 @@
 
         .featured-cards-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
             align-items: stretch;
             margin-top: 18px;
@@ -1754,33 +1754,6 @@
                         </div>
                     </div>
                 @endif
-
-                <!-- CARD 3: HOSTELLER DEEP NAVY PROMO CARD ("STAY LONGER, SAVE MORE") -->
-                <div class="promo-navy-card">
-                    <div>
-                        <h2>{{ $settings->promo_title ?? 'Stay Longer, Save More' }}</h2>
-                        <p class="promo-tagline">{{ $settings->promo_tagline ?? 'It\'s simple: transparent pricing with zero hidden charges and total peace of mind!' }}</p>
-
-                        <ul class="promo-perks-list">
-                            <li class="promo-perk-item">
-                                <span class="promo-check-icon">✓</span>
-                                <div><strong>{{ $settings->promo_perk_1 ?? 'Healthy 3 Daily Home-Cooked Meals with South & North Indian varieties.' }}</strong></div>
-                            </li>
-                            <li class="promo-perk-item">
-                                <span class="promo-check-icon">✓</span>
-                                <div><strong>{{ $settings->promo_perk_2 ?? 'Flexible Plans from ₹4,200/mo (Without Food) to ₹6,500/mo (With Food).' }}</strong></div>
-                            </li>
-                            <li class="promo-perk-item">
-                                <span class="promo-check-icon">✓</span>
-                                <div><strong>{{ $settings->promo_perk_3 ?? 'Attached Bathrooms in 100% of rooms with 24/7 hot & cold water.' }}</strong></div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <button type="button" class="btn btn-white" onclick="openEnquiryModal('Hostel Stay Plan')">{{ $settings->promo_btn_text ?? 'Choose room' }}</button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
