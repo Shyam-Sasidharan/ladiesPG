@@ -277,6 +277,10 @@
             color: var(--text-heading);
         }
 
+        .mobile-staff-item {
+            display: none;
+        }
+
         /* HERO & FEATURED ROOMS (3-CARD GRID IN VIDEO) */
         .hero-section {
             padding: 48px 0 36px;
@@ -1365,17 +1369,206 @@
         }
 
         @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
+            .container {
+                padding: 0 16px;
+            }
+            .site-header {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            .header-inner {
+                height: 64px;
+                gap: 8px;
+            }
+            .brand-link {
+                gap: 10px;
+                min-width: 0;
+                flex: 1;
+                margin-right: 6px;
+            }
+            .brand-logo-img {
+                width: 38px;
+                height: 38px;
+                border-radius: 8px;
+                flex-shrink: 0;
+            }
+            .brand-text {
+                min-width: 0;
+                overflow: hidden;
+            }
+            .brand-name {
+                font-size: 1.05rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: flex;
+                align-items: baseline;
+                gap: 4px;
+                line-height: 1.2;
+            }
+            .brand-sub {
+                font-size: 0.65rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 170px;
+                display: block;
+                line-height: 1.2;
+            }
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            .header-actions .admin-link {
+                display: none !important;
+            }
+            .header-actions .btn-sm {
+                padding: 7px 13px;
+                font-size: 0.82rem;
+                font-weight: 700;
+                white-space: nowrap;
+                border-radius: var(--radius-pill);
             }
             .mobile-toggle {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 38px;
+                height: 38px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                background: var(--surface-muted);
+                color: var(--text-heading);
+                font-size: 20px;
+                line-height: 1;
+                cursor: pointer;
+                padding: 0;
+                flex-shrink: 0;
+                transition: background 0.15s, border-color 0.15s;
+            }
+            .mobile-toggle:hover, .mobile-toggle:active {
+                background: #e2e8f0;
+            }
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                padding: 14px 18px 20px;
+                box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+                border-bottom: 1px solid var(--border);
+                gap: 4px;
+                z-index: 1000;
+            }
+            .nav-menu.is-open {
+                display: flex !important;
+                animation: navSlideDown 0.22s ease-out forwards;
+            }
+            @keyframes navSlideDown {
+                from { opacity: 0; transform: translateY(-8px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .nav-menu li {
+                width: 100%;
+                list-style: none;
+            }
+            .nav-menu .nav-link {
                 display: block;
+                padding: 10px 14px;
+                font-size: 0.98rem;
+                font-weight: 600;
+                color: var(--text-heading);
+                border-radius: 8px;
+                transition: all 0.15s ease;
+            }
+            .nav-menu .nav-link:hover, .nav-menu .nav-link.active {
+                background: var(--hostel-blue-light);
+                color: var(--hostel-blue);
+            }
+            .nav-menu .nav-link.active::after {
+                display: none;
+            }
+            .mobile-staff-item {
+                display: block !important;
+                margin-top: 10px;
+                padding-top: 12px;
+                border-top: 1px solid var(--border);
+            }
+            .mobile-staff-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                width: 100%;
+                padding: 10px 16px;
+                border-radius: var(--radius-pill);
+                background: var(--surface-muted);
+                border: 1px solid var(--border);
+                color: var(--text-heading);
+                font-weight: 700;
+                font-size: 0.92rem;
+                text-align: center;
+                transition: all 0.15s ease;
+            }
+            .mobile-staff-btn:hover {
+                background: #e2e8f0;
+            }
+            .hero-section {
+                padding: 32px 0 24px;
+            }
+            .hero-heading-wrap {
+                margin-bottom: 24px;
+            }
+            .hero-title {
+                font-size: 1.85rem;
+                line-height: 1.25;
+                letter-spacing: -0.02em;
+            }
+            .hero-subtitle {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                padding: 0 4px;
+            }
+            .everything-section,
+            .budget-accom-section,
+            .testimonials-section,
+            .gallery-section,
+            .news-section,
+            .contacts-section {
+                padding: 48px 0;
+            }
+            .everything-content h2,
+            .budget-content h2,
+            .contacts-content h2,
+            .gallery-header-row h2,
+            .section-header-center h2 {
+                font-size: 1.75rem;
+                line-height: 1.25;
+            }
+            .everything-grid,
+            .budget-grid,
+            .contacts-grid {
+                gap: 32px;
+            }
+            .features-2x2-grid,
+            .contacts-2x2-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
             .news-cards-grid {
                 grid-template-columns: 1fr;
             }
             .testimonial-showcase-grid {
                 grid-template-columns: 1fr;
+                padding: 24px 20px;
             }
             .testimonial-photo-wrap {
                 height: 260px;
@@ -1392,6 +1585,63 @@
             }
             .bento-gallery-grid {
                 grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            .gallery-item {
+                min-height: 220px;
+                height: 220px;
+            }
+            .floating-wa-btn {
+                bottom: 18px;
+                right: 18px;
+                padding: 10px 16px;
+                font-size: 0.85rem;
+                box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-sub {
+                display: none;
+            }
+            .brand-name {
+                font-size: 0.98rem;
+            }
+            .header-actions .btn-sm {
+                padding: 6px 11px;
+                font-size: 0.78rem;
+            }
+            .hero-title {
+                font-size: 1.62rem;
+            }
+            .hero-subtitle {
+                font-size: 0.88rem;
+            }
+            .promo-navy-card {
+                padding: 24px 18px;
+            }
+            .promo-navy-card h2 {
+                font-size: 1.55rem;
+            }
+            .floating-wa-btn {
+                bottom: 14px;
+                right: 14px;
+                padding: 9px 13px;
+                font-size: 0.8rem;
+                gap: 6px;
+            }
+            .room-card-body {
+                padding: 18px 16px;
+            }
+            dialog.booking-modal {
+                width: 95%;
+                border-radius: var(--radius-lg);
+            }
+            .modal-header {
+                padding: 18px 20px;
+            }
+            .modal-body {
+                padding: 20px 18px;
             }
         }
     </style>
@@ -1423,13 +1673,16 @@
                     <li><a href="#gallery" class="nav-link">Photos</a></li>
                     <li><a href="#news" class="nav-link">Hostel Life</a></li>
                     <li><a href="#contacts" class="nav-link">Contacts</a></li>
+                    <li class="mobile-staff-item">
+                        <a href="{{ route('login') }}" class="mobile-staff-btn">🔐 Staff Login</a>
+                    </li>
                 </ul>
             </nav>
 
             <div class="header-actions">
                 <a href="{{ route('login') }}" class="admin-link">Staff Login</a>
                 <button type="button" class="btn btn-primary btn-sm" onclick="openEnquiryModal('General Booking')">Book Now</button>
-                <button type="button" class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+                <button type="button" class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false">☰</button>
             </div>
         </div>
     </header>
@@ -2105,21 +2358,28 @@
 
         function toggleMobileMenu() {
             const nav = document.querySelector('.nav-menu');
-            if (nav.style.display === 'flex') {
-                nav.style.display = 'none';
-            } else {
-                nav.style.display = 'flex';
-                nav.style.flexDirection = 'column';
-                nav.style.position = 'absolute';
-                nav.style.top = '74px';
-                nav.style.left = '0';
-                nav.style.right = '0';
-                nav.style.background = '#ffffff';
-                nav.style.padding = '20px 24px';
-                nav.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
-                nav.style.borderBottom = '1px solid #e2e8f0';
-            }
+            const btn = document.querySelector('.mobile-toggle');
+            if (!nav || !btn) return;
+            const isOpen = nav.classList.toggle('is-open');
+            btn.innerHTML = isOpen ? '&times;' : '☰';
+            btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-menu a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    const nav = document.querySelector('.nav-menu');
+                    const btn = document.querySelector('.mobile-toggle');
+                    if (nav && nav.classList.contains('is-open')) {
+                        nav.classList.remove('is-open');
+                        if (btn) {
+                            btn.innerHTML = '☰';
+                            btn.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
