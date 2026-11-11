@@ -1234,24 +1234,32 @@
             box-shadow: 0 25px 60px rgba(0,0,0,0.3);
             max-width: 520px;
             width: 90%;
+            max-height: 88vh;
+            max-height: 88dvh;
             background: #ffffff;
             overflow: hidden;
+        }
+        dialog.booking-modal[open] {
+            display: flex;
+            flex-direction: column;
         }
         dialog.booking-modal::backdrop {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(4px);
         }
         .modal-header {
-            padding: 24px 28px;
+            padding: 18px 24px;
             background: var(--hostel-navy);
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
         .modal-header h3 {
             color: #ffffff;
-            font-size: 1.3rem;
+            font-size: 1.25rem;
+            margin: 0;
         }
         .modal-close-btn {
             background: none;
@@ -1262,10 +1270,24 @@
             line-height: 1;
         }
         .modal-body {
-            padding: 28px;
+            padding: 20px 24px;
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
         }
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+        }
+        .modal-form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+            background: #ffffff;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
         }
         .form-group label {
             display: block;
@@ -1288,6 +1310,340 @@
         .form-control:focus {
             border-color: var(--hostel-blue);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* AVAILABILITY & VACANCY MODAL */
+        dialog.availability-modal {
+            margin: auto;
+            padding: 0;
+            border: none;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            max-width: 740px;
+            width: 92%;
+            max-height: 88vh;
+            background: #ffffff;
+            overflow: hidden;
+        }
+        dialog.availability-modal[open] {
+            display: flex;
+            flex-direction: column;
+        }
+        dialog.availability-modal::backdrop {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        .avail-stats-bar {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .avail-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            color: #166534;
+            background: #dcfce7;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+        }
+        .avail-tabs {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .avail-tab-btn {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .avail-tab-btn:hover {
+            border-color: var(--hostel-blue);
+            color: var(--hostel-blue);
+        }
+        .avail-tab-btn.active {
+            background: var(--hostel-blue);
+            color: #ffffff;
+            border-color: var(--hostel-blue);
+        }
+        .avail-modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .floor-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
+        }
+        .floor-badge {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .floor-stats {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .rooms-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 16px;
+        }
+        .room-slot-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+        .room-slot-card.has-vacancy {
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+        .room-slot-card.highlighted-room {
+            border: 2px solid var(--hostel-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+            animation: pulseHighlight 1.5s ease-in-out;
+        }
+        @keyframes pulseHighlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .room-slot-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .room-slot-number {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            line-height: 1.2;
+        }
+        .room-slot-type {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .slot-pill {
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+        }
+        .slot-pill.vacant {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .slot-pill.full {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+        .room-slot-pricing {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            font-size: 0.82rem;
+            color: var(--text-body);
+            background: rgba(255, 255, 255, 0.75);
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .room-slot-pricing strong {
+            color: var(--text-heading);
+        }
+        .beds-slot-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .beds-list-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+        .beds-pill-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .bed-slot-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 9px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+        .bed-slot-chip.available {
+            background: #ffffff;
+            border-color: #86efac;
+            color: #166534;
+            box-shadow: 0 1px 2px rgba(22, 101, 52, 0.1);
+        }
+        .bed-slot-chip.occupied {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #94a3b8;
+        }
+        .bed-chip-tier {
+            font-size: 0.65rem;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+        .bed-chip-tier.top {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        .bed-chip-tier.down {
+            background: #fef3c7;
+            color: #b45309;
+        }
+        .bed-chip-status {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 2px;
+        }
+        .bed-slot-chip.available .bed-chip-status {
+            color: #15803d;
+        }
+        .room-slot-actions {
+            margin-top: auto;
+            padding-top: 8px;
+            display: flex;
+            gap: 8px;
+        }
+        .btn-whatsapp-slot {
+            flex: 1;
+            background: var(--wa-green);
+            color: #ffffff !important;
+            font-size: 0.84rem;
+            font-weight: 700;
+            padding: 9px 12px;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: none;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-whatsapp-slot:hover {
+            background: var(--wa-green-dark);
+            color: #ffffff !important;
+        }
+        .btn-call-slot {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            color: var(--text-heading) !important;
+            padding: 9px 12px;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-call-slot:hover {
+            border-color: var(--hostel-blue);
+            color: var(--hostel-blue) !important;
+        }
+        .btn-full-slot {
+            flex: 1;
+            background: #f1f5f9;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 9px 12px;
+            border-radius: var(--radius-pill);
+            border: 1px solid #e2e8f0;
+            cursor: not-allowed;
+            text-align: center;
+        }
+        .avail-modal-footer {
+            padding: 14px 24px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .footer-help-text {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+        .footer-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @media (max-width: 640px) {
+            dialog.availability-modal {
+                width: 95%;
+                max-height: 92vh;
+            }
+            .avail-stats-bar {
+                padding: 10px 16px;
+            }
+            .avail-modal-body {
+                padding: 16px;
+            }
+            .rooms-slot-grid {
+                grid-template-columns: 1fr;
+            }
+            .avail-modal-footer {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .footer-btn-group {
+                justify-content: flex-end;
+            }
         }
 
         /* FLOATING WHATSAPP BUTTON */
@@ -1635,13 +1991,15 @@
             }
             dialog.booking-modal {
                 width: 95%;
+                max-height: 92vh;
+                max-height: 92dvh;
                 border-radius: var(--radius-lg);
             }
             .modal-header {
-                padding: 18px 20px;
+                padding: 16px 18px;
             }
             .modal-body {
-                padding: 20px 18px;
+                padding: 16px 18px 18px;
             }
         }
     </style>
@@ -1713,7 +2071,7 @@
                                     <span class="room-meta-item">🛏️ {{ $rItem->sleeps_text ?: ($rItem->sharing_type) }}</span>
                                     <span class="room-meta-item">🪜 {{ $rItem->bed_type_text ?: ('₹' . number_format($rItem->monthly_rent) . ' with food') }}</span>
                                 </div>
-                                <a href="javascript:void(0)" onclick="openEnquiryModal('{{ $rItem->title }}')" class="card-bottom-link">See availability →</a>
+                                <a href="javascript:void(0)" onclick="openAvailabilityModal('{{ $rItem->room_number ?: $rItem->title }}')" class="card-bottom-link">See availability →</a>
                             </div>
                         </div>
                     @endforeach
@@ -1732,7 +2090,7 @@
                                 <span class="room-meta-item">🛏️ Rooms A1 & B1</span>
                                 <span class="room-meta-item">₹4,200 / ₹6,500 with food</span>
                             </div>
-                            <a href="javascript:void(0)" onclick="openEnquiryModal('Room A1 / B1')" class="card-bottom-link">See availability →</a>
+                            <a href="javascript:void(0)" onclick="openAvailabilityModal('A1')" class="card-bottom-link">See availability →</a>
                         </div>
                     </div>
 
@@ -1750,7 +2108,7 @@
                                 <span class="room-meta-item">🛏️ 2 Sleeps</span>
                                 <span class="room-meta-item">₹6,500 / ₹8,600 with food</span>
                             </div>
-                            <a href="javascript:void(0)" onclick="openEnquiryModal('2-Sharing Room (A3/B3)')" class="card-bottom-link">See availability →</a>
+                            <a href="javascript:void(0)" onclick="openAvailabilityModal('A3')" class="card-bottom-link">See availability →</a>
                         </div>
                     </div>
                 @endif
@@ -1913,7 +2271,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-primary" onclick="openEnquiryModal('Budget Accommodation Enquiry')">Check Room Availability →</button>
+                <button type="button" class="btn btn-primary" onclick="openAvailabilityModal('all')">Check Room Availability →</button>
             </div>
 
             <div class="showcase-room-card">
@@ -2165,7 +2523,7 @@
                     <h4>Portal Access</h4>
                     <ul class="footer-links-list">
                         <li><a href="{{ route('login') }}">Staff & Warden Login →</a></li>
-                        <li><a href="javascript:void(0)" onclick="openEnquiryModal('Footer Enquiry')">Check Bed Vacancy</a></li>
+                        <li><a href="javascript:void(0)" onclick="openAvailabilityModal('all')">Check Bed Vacancy</a></li>
                         <li><a href="#facilities">View Amenities</a></li>
                     </ul>
                 </div>
@@ -2183,6 +2541,128 @@
         <span style="font-size:18px">💬</span>
         <span>WhatsApp Us</span>
     </a>
+
+    <!-- REAL-TIME ROOM & BED AVAILABILITY MODAL -->
+    <dialog id="availabilityModal" class="availability-modal">
+        <div class="modal-header">
+            <div>
+                <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:2px">Live Room Vacancy</div>
+                <h3 id="availModalTitle" style="color:#ffffff;font-size:1.25rem;font-weight:800;margin:0">Available Room & Bed Slots</h3>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('availabilityModal').close()" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="avail-stats-bar">
+            <div class="avail-stat-badge">
+                <span>🟢</span>
+                <strong>{{ $availableBeds }} Vacant Beds</strong> Available
+            </div>
+            <div class="avail-tabs" id="availTabs">
+                <button type="button" class="avail-tab-btn active" onclick="filterAvailability('all', this)">All Rooms</button>
+                @foreach($floors as $fl)
+                    <button type="button" class="avail-tab-btn" onclick="filterAvailability('floor-{{ $fl->id }}', this)">{{ $fl->name }}</button>
+                @endforeach
+                <button type="button" class="avail-tab-btn" onclick="filterAvailability('vacant-only', this)">Vacant Only</button>
+            </div>
+        </div>
+
+        <div class="avail-modal-body">
+            @php
+                $rawPhone = $settings->whatsapp_number ?: ($settings->phone ?: '8590621496');
+                $cleanPhone = preg_replace('/[^0-9]/', '', $rawPhone);
+                if (strlen($cleanPhone) === 10) { $cleanPhone = '91' . $cleanPhone; }
+            @endphp
+
+            @forelse($floors as $floor)
+                <div class="floor-group" data-floor="floor-{{ $floor->id }}">
+                    <div class="floor-group-header">
+                        <span class="floor-badge">🏢 {{ $floor->name }}</span>
+                        <span class="floor-stats">{{ $floor->rooms->sum(fn($r) => $r->available) }} of {{ $floor->rooms->sum('capacity') }} beds vacant</span>
+                    </div>
+
+                    <div class="rooms-slot-grid">
+                        @foreach($floor->rooms as $room)
+                            @php
+                                $isVacant = $room->available > 0;
+                            @endphp
+                            <div class="room-slot-card {{ $isVacant ? 'has-vacancy' : 'is-full' }}" 
+                                 data-room-number="{{ strtolower($room->number) }}"
+                                 data-floor="floor-{{ $floor->id }}"
+                                 data-vacant="{{ $isVacant ? '1' : '0' }}">
+                                
+                                <div class="room-slot-header">
+                                    <div>
+                                        <div class="room-slot-number">Room {{ $room->number }}</div>
+                                        <div class="room-slot-type">{{ $room->sharing_label ?? ($room->capacity . ' Sharing') }} · {{ $floor->name }}</div>
+                                    </div>
+                                    <div>
+                                        @if($isVacant)
+                                            <span class="slot-pill vacant">🟢 {{ $room->available }} Bed{{ $room->available > 1 ? 's' : '' }} Vacant</span>
+                                        @else
+                                            <span class="slot-pill full">🔴 Fully Booked</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="room-slot-pricing">
+                                    <div>Without Food: <strong>₹{{ number_format($room->rent_without_food ?? 4200) }}</strong> / mo</div>
+                                    <div>With Food: <strong>₹{{ number_format($room->monthly_rent) }}</strong> / mo (3 meals daily)</div>
+                                </div>
+
+                                <div class="beds-slot-list">
+                                    <div class="beds-list-label">Bed Slots in this room:</div>
+                                    <div class="beds-pill-grid">
+                                        @foreach($room->beds as $bed)
+                                            @php $bAvail = ($bed->effective_status === 'available'); @endphp
+                                            <div class="bed-slot-chip {{ $bAvail ? 'available' : 'occupied' }}">
+                                                <span class="bed-chip-icon">🛏️</span>
+                                                <span class="bed-chip-name">Bed {{ $bed->name }}</span>
+                                                @if($bed->tier)
+                                                    <span class="bed-chip-tier {{ strtolower($bed->tier) }}">{{ $bed->tier }}</span>
+                                                @endif
+                                                <span class="bed-chip-status">{{ $bAvail ? 'Vacant' : 'Booked' }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <div class="room-slot-actions">
+                                    @if($isVacant)
+                                        @php
+                                            $waText = "Hello " . ($settings->name ?? 'SJ Ladies Hostel') . ", I saw that Room " . $room->number . " (" . $floor->name . ", " . ($room->sharing_label ?? ($room->capacity . ' Sharing')) . ") has vacant beds available. I would like to book a bed.";
+                                            $waLink = "https://wa.me/" . $cleanPhone . "?text=" . rawurlencode($waText);
+                                        @endphp
+                                        <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-slot">
+                                            <span>💬</span> Book on WhatsApp
+                                        </a>
+                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $settings->phone ?? '8590621496') }}" class="btn-call-slot" title="Call Hostel">
+                                            📞 Call
+                                        </a>
+                                    @else
+                                        <div class="btn-full-slot">
+                                            Fully Occupied (0 Vacancies)
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @empty
+                <p style="text-align:center;color:var(--text-muted);padding:30px 0;">No room details available at the moment.</p>
+            @endforelse
+        </div>
+
+        <div class="avail-modal-footer">
+            <div class="footer-help-text">
+                Want to book a visit or have special requirements?
+            </div>
+            <div class="footer-btn-group">
+                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('availabilityModal').close()">Close</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('availabilityModal').close(); openEnquiryModal('General Booking');">Fill Enquiry Form →</button>
+            </div>
+        </div>
+    </dialog>
 
     <!-- BOOKING ENQUIRY MODAL DIALOG -->
     <dialog id="enquiryModal" class="booking-modal">
@@ -2230,9 +2710,9 @@
                 <textarea name="notes" id="enquiry_notes" class="form-control" rows="2" placeholder="Any specific requirements (TOP/DOWN bed, study desk, etc.)"></textarea>
             </div>
 
-            <div style="display:flex;gap:12px;margin-top:20px">
+            <div class="modal-form-actions">
                 <button type="button" class="btn btn-outline" style="flex:1" onclick="document.getElementById('enquiryModal').close()">Cancel</button>
-                <button type="submit" class="btn btn-primary" style="flex:1">Submit Enquiry →</button>
+                <button type="submit" class="btn btn-primary" style="flex:1.4">Submit Enquiry →</button>
             </div>
         </form>
     </dialog>
@@ -2299,6 +2779,87 @@
         function prevTestimonial() {
             currentTestimonialIdx = (currentTestimonialIdx - 1 + testimonials.length) % testimonials.length;
             updateTestimonial(currentTestimonialIdx);
+        }
+
+        // Live Room Availability & Vacancy Modal
+        function openAvailabilityModal(filterTarget) {
+            const modal = document.getElementById('availabilityModal');
+            if (!modal) return;
+
+            const allRooms = modal.querySelectorAll('.room-slot-card');
+            allRooms.forEach(function(card) {
+                card.style.display = 'flex';
+                card.classList.remove('highlighted-room');
+            });
+
+            const allFloors = modal.querySelectorAll('.floor-group');
+            allFloors.forEach(function(f) { f.style.display = 'block'; });
+
+            const tabs = modal.querySelectorAll('.avail-tab-btn');
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            if (tabs[0]) tabs[0].classList.add('active');
+
+            if (filterTarget && filterTarget !== 'all' && filterTarget !== 'Budget Accommodation Enquiry') {
+                const match = filterTarget.match(/[AB][1-9]/i);
+                const targetNum = match ? match[0].toLowerCase() : filterTarget.toLowerCase();
+
+                let found = false;
+                allRooms.forEach(function(card) {
+                    const rNum = (card.getAttribute('data-room-number') || '').toLowerCase();
+                    if (rNum === targetNum || targetNum.includes(rNum)) {
+                        card.classList.add('highlighted-room');
+                        found = true;
+                    }
+                });
+
+                if (found) {
+                    document.getElementById('availModalTitle').textContent = `Room ${targetNum.toUpperCase()} & Vacant Bed Slots`;
+                } else {
+                    document.getElementById('availModalTitle').textContent = `Available Room & Bed Slots`;
+                }
+            } else {
+                document.getElementById('availModalTitle').textContent = `Available Room & Bed Slots`;
+            }
+
+            modal.showModal();
+
+            const highlighted = modal.querySelector('.highlighted-room');
+            if (highlighted) {
+                setTimeout(function() {
+                    highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150);
+            }
+        }
+
+        function filterAvailability(type, btn) {
+            const modal = document.getElementById('availabilityModal');
+            if (!modal) return;
+
+            const tabs = modal.querySelectorAll('.avail-tab-btn');
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+
+            const allRooms = modal.querySelectorAll('.room-slot-card');
+            const allFloors = modal.querySelectorAll('.floor-group');
+
+            allFloors.forEach(function(f) { f.style.display = 'block'; });
+
+            if (type === 'all') {
+                allRooms.forEach(function(r) { r.style.display = 'flex'; });
+            } else if (type === 'vacant-only') {
+                allRooms.forEach(function(r) {
+                    r.style.display = r.getAttribute('data-vacant') === '1' ? 'flex' : 'none';
+                });
+            } else if (type.startsWith('floor-')) {
+                allFloors.forEach(function(f) {
+                    if (f.getAttribute('data-floor') === type) {
+                        f.style.display = 'block';
+                        f.querySelectorAll('.room-slot-card').forEach(function(r) { r.style.display = 'flex'; });
+                    } else {
+                        f.style.display = 'none';
+                    }
+                });
+            }
         }
 
         // Enquiry Modal
