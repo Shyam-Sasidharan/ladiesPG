@@ -2672,6 +2672,7 @@
         </div>
         <form action="{{ route('enquiry.store') }}" method="post" class="modal-body">
             @csrf
+            <input type="hidden" name="room_number" id="enquiry_room_number" value="">
             <div class="form-group">
                 <label for="enquiry_name">Full Name *</label>
                 <input type="text" name="name" id="enquiry_name" class="form-control" required placeholder="Enter your full name">
@@ -2712,8 +2713,14 @@
 
             <div class="modal-form-actions">
                 <button type="button" class="btn btn-outline" style="flex:1" onclick="document.getElementById('enquiryModal').close()">Cancel</button>
-                <button type="submit" class="btn btn-primary" style="flex:1.4">Submit Enquiry →</button>
+                <button type="submit" class="btn btn-primary" style="flex:1.4; background:#25d366; border-color:#25d366; color:#fff; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824zM12.012 2C6.486 2 2 6.486 2 12.012c0 1.956.565 3.784 1.542 5.337L2 22l4.821-1.49c1.493.882 3.23 1.39 5.091 1.39 5.526 0 10.012-4.486 10.012-10.012C21.924 6.486 17.438 2 12.012 2z"/></svg>
+                    <span>Send on WhatsApp</span>
+                </button>
             </div>
+            <p style="margin: 8px 0 0; font-size: 11.5px; color: #64748b; text-align: center;">
+                Enquiry will be saved & redirected to WhatsApp to confirm directly with our warden.
+            </p>
         </form>
     </dialog>
 
@@ -2863,14 +2870,18 @@
         }
 
         // Enquiry Modal
-        function openEnquiryModal(roomPreference) {
+        function openEnquiryModal(roomPreference, roomNum) {
             const modal = document.getElementById('enquiryModal');
+            const roomInput = document.getElementById('enquiry_room_number');
+            if (roomInput) roomInput.value = roomNum || '';
             if (roomPreference) {
                 document.getElementById('modalRoomTitle').textContent = `Enquire: ${roomPreference}`;
                 if (roomPreference.includes('2-Sharing') || roomPreference.includes('Double')) {
                     document.getElementById('enquiry_sharing').value = 'Two Sharing';
                 } else if (roomPreference.includes('6-Sharing')) {
                     document.getElementById('enquiry_sharing').value = 'Six Sharing';
+                } else if (roomPreference.includes('5-Sharing')) {
+                    document.getElementById('enquiry_sharing').value = 'Five Sharing';
                 } else if (roomPreference.includes('4-Sharing')) {
                     document.getElementById('enquiry_sharing').value = 'Four Sharing';
                 }
@@ -2915,5 +2926,17 @@
             });
         });
     </script>
+
+    @if (session('success'))
+        <div id="toastSuccess" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 99999; background: #0b2545; color: #ffffff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 14px; max-width: 92vw; font-size: 13.5px;">
+            <span>✓ {{ session('success') }}</span>
+            @if (session('whatsapp_url'))
+                <a href="{{ session('whatsapp_url') }}" target="_blank" rel="noopener noreferrer" style="background: #25d366; color: #fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 13px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
+                    Open WhatsApp 💬
+                </a>
+            @endif
+            <button type="button" onclick="document.getElementById('toastSuccess').remove()" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer; line-height:1; margin-left:4px;">&times;</button>
+        </div>
+    @endif
 </body>
 </html>

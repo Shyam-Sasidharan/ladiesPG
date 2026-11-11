@@ -171,15 +171,39 @@ class HomeController extends Controller
         } catch (\Throwable) {
         }
 
-        $phoneClean = preg_replace('/[^0-9]/', '', PgSetting::first()?->phone ?? '8590621496');
+        $settings = PgSetting::first();
+        $rawPhone = $settings?->whatsapp_number ?: ($settings?->phone ?: '8590621496');
+        $phoneClean = preg_replace('/[^0-9]/', '', $rawPhone);
         if (strlen($phoneClean) === 10) {
             $phoneClean = '91'.$phoneClean;
         }
-        $whatsappMsg = rawurlencode("Hello SJ Ladies Hostel, I would like to book/enquire about {$roomText} ({$sharingText}, {$foodText}). My name is {$validated['name']} (Phone: {$validated['phone']}).");
+
+        $hostelName = $settings?->name ?? 'SJ Ladies Hostel';
+        $msgLines = [
+            "Hello {$hostelName}, I would like to enquire about room booking:",
+            "",
+            "👤 Name: {$validated['name']}",
+            "📞 Mobile: {$validated['phone']}",
+            "🛏 Room Preference: {$roomText} ({$sharingText})",
+            "🍽 Food Plan: {$foodText}",
+        ];
+
+        if (! empty($validated['joining_date'])) {
+            $msgLines[] = "📅 Expected Joining Date: {$validated['joining_date']}";
+        }
+
+        if (! empty($validated['notes'])) {
+            $msgLines[] = "📝 Notes: {$validated['notes']}";
+        }
+
+        $msgLines[] = "";
+        $msgLines[] = "Please confirm availability and booking details. Thank you!";
+
+        $whatsappMsg = rawurlencode(implode("\n", $msgLines));
         $whatsappUrl = "https://wa.me/{$phoneClean}?text={$whatsappMsg}";
 
-        return back()
-            ->with('success', 'Thank you! Your booking enquiry has been received. Our warden / administration will call you shortly.')
+        return redirect()->away($whatsappUrl)
+            ->with('success', 'Thank you! Your booking enquiry has been received.')
             ->with('whatsapp_url', $whatsappUrl);
     }
 }
