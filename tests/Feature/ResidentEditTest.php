@@ -77,4 +77,35 @@ class ResidentEditTest extends TestCase
         $this->assertEquals(4500.0, (float) $savitha->monthly_rent);
         $this->assertEquals(4500.0, (float) $savitha->activeAllocation->allocation->rent);
     }
+
+    public function test_checkout_modal_does_not_render_invalid_refund_input_when_deposit_is_zero(): void
+    {
+        $this->seed(SJHostelSeeder::class);
+        $admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($admin);
+
+        // Find resident with zero deposit held
+        $resident = Resident::whereHas('activeAllocation')->get()->first(function ($r) {
+            return $r->payments()->where('type', 'deposit')->where('status', 'active')->count() === 0;
+        });
+
+        $this->assertNotNull($resident);
+
+        $response = $this->get('/residents/'.$resident->id);
+        $response->assertOk();
+        $response->assertDontSee('min="0.01" max="0"', false);
+        $response->assertDontSee('name="refund_amount"', false);
+        $response->assertSee('No security deposit held for this resident');
+
+        // Test checking out the resident
+        $checkoutResponse = $this->post(route('residents.checkout', $resident), [
+            'date' => today()->toDateString(),
+            'reason' => 'Completed college course',
+            'refund_security_deposit' => '0',
+        ]);
+
+        $checkoutResponse->assertSessionHasNoErrors();
+        $checkoutResponse->assertRedirect(route('residents.show', $resident));
+        $this->assertEquals('checked_out', $resident->fresh()->status);
+    }
 }
