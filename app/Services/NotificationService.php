@@ -12,7 +12,7 @@ class NotificationService
     public function refresh(): void
     {
         // 1 Day Before Due Date Reminder (Automatically alerts 1 day in advance)
-        RentRecord::with('resident', 'payments')->whereDate('due_date', today()->addDay())->chunkById(100, function ($records) {
+        RentRecord::with('resident', 'payments')->whereHas('resident', fn ($q) => $q->whereIn('status', ['active', 'notice_period']))->whereDate('due_date', today()->addDay())->chunkById(100, function ($records) {
             foreach ($records as $r) {
                 if ($r->pending > 0 && $r->resident) {
                     $this->add(
@@ -27,7 +27,7 @@ class NotificationService
         });
 
         // Due Today Reminder
-        RentRecord::with('resident', 'payments')->whereDate('due_date', today())->chunkById(100, function ($records) {
+        RentRecord::with('resident', 'payments')->whereHas('resident', fn ($q) => $q->whereIn('status', ['active', 'notice_period']))->whereDate('due_date', today())->chunkById(100, function ($records) {
             foreach ($records as $r) {
                 if ($r->pending > 0 && $r->resident) {
                     $this->add(
@@ -42,7 +42,7 @@ class NotificationService
         });
 
         // Overdue Rent Alert
-        RentRecord::with('resident', 'payments')->whereDate('due_date', '<', today())->chunkById(100, function ($records) {
+        RentRecord::with('resident', 'payments')->whereHas('resident', fn ($q) => $q->whereIn('status', ['active', 'notice_period']))->whereDate('due_date', '<', today())->chunkById(100, function ($records) {
             foreach ($records as $r) {
                 if ($r->pending > 0 && $r->resident) {
                     $this->add(

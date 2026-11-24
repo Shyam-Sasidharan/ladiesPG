@@ -108,4 +108,54 @@ class ResidentEditTest extends TestCase
         $checkoutResponse->assertRedirect(route('residents.show', $resident));
         $this->assertEquals('checked_out', $resident->fresh()->status);
     }
+
+    public function test_checked_out_residents_are_excluded_from_next_month_rent_generation_and_billing_default_view(): void
+    {
+        $this->seed(SJHostelSeeder::class);
+        $admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($admin);
+
+        $resident = Resident::where('status', 'active')->whereHas('activeAllocation')->firstOrFail();
+        $billingService = app(\App\Services\BillingService::class);
+        $allocationService = app(\App\Services\AllocationService::class);
+
+        // Generate rent for current month while active
+        $currentMonth = today()->format('Y-m');
+        $billingService->generate($currentMonth);
+
+        // Verify current month rent record exists for resident
+        $this->assertDatabaseHas('rent_records', [
+            'resident_id' => $resident->id,
+            'month' => today()->startOfMonth()->toDateString(),
+        ]);
+
+        // Checkout the resident
+        $allocationService->checkout($resident->id, [
+            'date' => today()->toDateString(),
+            'reason' => 'Moving to another city',
+            'refund_security_deposit' => false,
+        ]);
+
+        $this->assertEquals('checked_out', $resident->fresh()->status);
+
+        // Generate rent for next month
+        $nextMonth = today()->addMonth()->format('Y-m');
+        $billingService->generate($nextMonth);
+
+        // Verify no rent record was created for the checked out resident for next month
+        $this->assertDatabaseMissing('rent_records', [
+            'resident_id' => $resident->id,
+            'month' => today()->addMonth()->startOfMonth()->toDateString(),
+        ]);
+
+        // Verify billing index by default does not show checked out residents
+        $billingResponse = $this->get(route('billing.index'));
+        $billingResponse->assertOk();
+        $billingResponse->assertDontSee($resident->full_name);
+
+        // But when specifically filtering for checked out residents, they are visible
+        $checkedOutResponse = $this->get(route('billing.index', ['resident_status' => 'checked_out']));
+        $checkedOutResponse->assertOk();
+        $checkedOutResponse->assertSee($resident->full_name);
+    }
 }

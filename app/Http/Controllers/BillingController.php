@@ -15,7 +15,18 @@ class BillingController extends Controller
 {
     public function index(Request $r)
     {
-        $q = RentRecord::with(['resident', 'payments', 'allocation.bed.room'])->when($r->month, fn ($q) => $q->where('month', $r->month.'-01'))->when($r->q, fn ($q) => $q->whereHas('resident', fn ($q) => $q->where('full_name', 'like', '%'.$r->q.'%')->orWhere('mobile', 'like', '%'.$r->q.'%')));
+        $q = RentRecord::with(['resident', 'payments', 'allocation.bed.room'])
+            ->when($r->month, fn ($q) => $q->where('month', $r->month.'-01'))
+            ->when($r->q, fn ($q) => $q->whereHas('resident', fn ($q) => $q->where('full_name', 'like', '%'.$r->q.'%')->orWhere('mobile', 'like', '%'.$r->q.'%')));
+
+        // Resident status filter: defaults to active residents
+        $residentStatus = $r->input('resident_status', 'active');
+        if ($residentStatus === 'active') {
+            $q->whereHas('resident', fn ($sq) => $sq->whereIn('status', ['active', 'notice_period']));
+        } elseif ($residentStatus === 'checked_out') {
+            $q->whereHas('resident', fn ($sq) => $sq->where('status', 'checked_out'));
+        }
+
         if ($r->filled('status')) {
             $q->withSum('payments', 'amount');
             $paid = "(select coalesce(sum(payments.amount),0) from payments where payments.rent_record_id=rent_records.id and payments.status='active')";
@@ -29,7 +40,11 @@ class BillingController extends Controller
             };
         }
 
-        return view('billing.index', ['records' => $q->latest('month')->paginate(15)->withQueryString(), 'residents' => Resident::orderBy('full_name')->get(), 'payments' => Payment::with('resident')->where('status', 'active')->latest()->limit(10)->get()]);
+        return view('billing.index', [
+            'records' => $q->latest('month')->paginate(15)->withQueryString(),
+            'residents' => Resident::whereIn('status', ['active', 'notice_period'])->orderBy('full_name')->get(),
+            'payments' => Payment::with('resident')->where('status', 'active')->latest()->limit(10)->get(),
+        ]);
     }
 
     public function generate(Request $r, BillingService $service)

@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Resident;
 use App\Models\Room;
 use App\Models\RoomTransfer;
+use Carbon\Carbon;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -137,6 +138,21 @@ class AllocationService
             $active->allocation->update(['check_out' => $data['date']]);
             $active->delete();
             $resident->update(['status' => 'checked_out', 'expected_checkout' => $data['date'], 'updated_by' => auth()->id()]);
+
+            // Clean up any unpaid future rent records for months after checkout date
+            $checkoutDate = Carbon::parse($data['date']);
+            $resident->rentRecords()
+                ->where('month', '>', $checkoutDate->copy()->endOfMonth()->toDateString())
+                ->whereDoesntHave('payments')
+                ->delete();
+
+            // If checked out on or before the 1st of the month with zero payments, remove that unstayed month's rent record as well
+            if ($checkoutDate->day <= 1) {
+                $resident->rentRecords()
+                    ->where('month', '=', $checkoutDate->copy()->startOfMonth()->toDateString())
+                    ->whereDoesntHave('payments')
+                    ->delete();
+            }
 
             return $checkout;
         }, 5);

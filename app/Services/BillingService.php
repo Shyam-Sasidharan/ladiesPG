@@ -16,23 +16,64 @@ class BillingService
     public function generate(string $month): int
     {
         $date = Carbon::parse($month)->startOfMonth();
+        $monthStart = $date->toDateString();
+        $monthEnd = $date->copy()->endOfMonth()->toDateString();
         $count = 0;
-        ActiveAllocation::with('allocation')->chunkById(100, function ($rows) use ($date, &$count) {
-            foreach ($rows as $active) {
-                $created = DB::transaction(function () use ($active, $date) {
-                    Resident::whereKey($active->resident_id)->lockForUpdate()->firstOrFail();
-                    $current = ActiveAllocation::with('allocation')->where('resident_id', $active->resident_id)->first();
-                    if (! $current || $current->allocation->check_in > $date->copy()->endOfMonth()->toDateString()) {
-                        return false;
-                    }
 
-                    return RentRecord::firstOrCreate(['resident_id' => $active->resident_id, 'month' => $date->toDateString()], ['allocation_id' => $current->allocation_id, 'due_date' => $date->copy()->day(5)->toDateString(), 'amount' => $current->allocation->rent])->wasRecentlyCreated;
-                }, 5);
-                if ($created) {
-                    $count++;
+        ActiveAllocation::with(['allocation', 'resident'])
+            ->whereHas('resident', function ($q) {
+                $q->whereIn('status', ['active', 'notice_period']);
+            })
+            ->chunkById(100, function ($rows) use ($date, $monthStart, $monthEnd, &$count) {
+                foreach ($rows as $active) {
+                    $created = DB::transaction(function () use ($active, $date, $monthStart, $monthEnd) {
+                        $resident = Resident::whereKey($active->resident_id)->lockForUpdate()->firstOrFail();
+
+                        // Never generate rent for checked out residents
+                        if ($resident->status === 'checked_out') {
+                            return false;
+                        }
+
+                        // If resident has an expected checkout before this month began, skip
+                        if ($resident->expected_checkout && $resident->expected_checkout->toDateString() < $monthStart) {
+                            return false;
+                        }
+
+                        // If resident already checked out before this month began, skip
+                        if ($resident->checkouts()->whereDate('date', '<', $monthStart)->exists()) {
+                            return false;
+                        }
+
+                        $current = ActiveAllocation::with('allocation')->where('resident_id', $active->resident_id)->first();
+                        if (! $current || ! $current->allocation) {
+                            return false;
+                        }
+
+                        // If check-in is in a future month, skip
+                        if ($current->allocation->check_in > $monthEnd) {
+                            return false;
+                        }
+
+                        // If allocation itself checked out before this month began, skip
+                        if ($current->allocation->check_out && $current->allocation->check_out < $monthStart) {
+                            return false;
+                        }
+
+                        return RentRecord::firstOrCreate(
+                            ['resident_id' => $active->resident_id, 'month' => $monthStart],
+                            [
+                                'allocation_id' => $current->allocation_id,
+                                'due_date' => $date->copy()->day(5)->toDateString(),
+                                'amount' => $current->allocation->rent,
+                            ]
+                        )->wasRecentlyCreated;
+                    }, 5);
+
+                    if ($created) {
+                        $count++;
+                    }
                 }
-            }
-        });
+            });
 
         return $count;
     }
